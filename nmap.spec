@@ -1,7 +1,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 2.54BETA22
-Release: 3
+Version: 2.54BETA31
+Release: 1
 Copyright: GPL
 Group: Applications/System
 Source0: http://www.insecure.org/nmap/%{name}-%{version}.tgz
@@ -65,6 +65,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon Mar 25 2002 Harald Hoyer <harald@redhat.com>
+- more recent version (#61490)
+
 * Mon Jul 23 2001 Harald Hoyer <harald@redhat.com>
 - buildprereq for nmap-frontend (#49644)
 
