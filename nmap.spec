@@ -2,8 +2,8 @@
 
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 3.50
-Release: 4
+Version: 3.55
+Release: 1
 License: GPL
 Group: Applications/System
 Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
@@ -76,16 +76,19 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Jul 13 2004 Harald Hoyer <harald@redhat.com> - 2:3.55-1
+- new version
+
 * Tue Jun 15 2004 Elliot Lee <sopwith@redhat.com>
 - rebuilt
 
 * Fri Feb 13 2004 Elliot Lee <sopwith@redhat.com>
 - rebuilt
 
-* Thu Jan 29 2004 Harald Hoyer <harald@faro.stuttgart.redhat.com> - 2:3.50-2
+* Thu Jan 29 2004 Harald Hoyer <harald@redhat.com> - 2:3.50-2
 - added BuildRequires: openssl-devel, gtk+-devel, pcre-devel, libpcap
 
-* Thu Jan 22 2004 Harald Hoyer <harald@faro.stuttgart.redhat.com> - 2:3.50-1
+* Thu Jan 22 2004 Harald Hoyer <harald@redhat.com> - 2:3.50-1
 - version 3.50
 
 * Wed Oct  8 2003 Harald Hoyer <harald@redhat.de> 2:3.48-1
