@@ -1,7 +1,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 2.99.2
-%define nmap_version 2.99RC1
+Version: 3.00
+%define nmap_version 3.00
 Release: 1
 Copyright: GPL
 Group: Applications/System
@@ -67,6 +67,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Aug  1 2002 Harald Hoyer <harald@redhat.de>
+- version 3.0
+
 * Mon Jul 29 2002 Harald Hoyer <harald@redhat.de> 2.99.2-1
 - bumped version
 
