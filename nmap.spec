@@ -3,7 +3,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 3.50
-Release: 1
+Release: 2
 License: GPL
 Group: Applications/System
 Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
@@ -13,6 +13,7 @@ Patch1: makefile.patch
 URL: http://www.insecure.org/nmap/
 BuildRoot: %{_tmppath}/%{name}-root
 Epoch: 2
+BuildRequires: openssl-devel, gtk+-devel, pcre-devel, libpcap
 
 %description
 Nmap is a utility for network exploration or security auditing.  It supports
@@ -37,7 +38,7 @@ be installed before installing nmap-frontend.
 %setup -q
 
 %build
-%configure
+%configure  --with-libpcap=/usr
 make
 
 %install
@@ -75,6 +76,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Jan 29 2004 Harald Hoyer <harald@faro.stuttgart.redhat.com> - 2:3.50-2
+- added BuildRequires: openssl-devel, gtk+-devel, pcre-devel, libpcap
+
 * Thu Jan 22 2004 Harald Hoyer <harald@faro.stuttgart.redhat.com> - 2:3.50-1
 - version 3.50
 
