@@ -1,7 +1,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 2.54BETA22
-Release: 2
+Release: 3
 Copyright: GPL
 Group: Applications/System
 Source0: http://www.insecure.org/nmap/%{name}-%{version}.tgz
@@ -23,6 +23,7 @@ predictability characteristics, reverse-identd scanning, and more.
 Summary: Gtk+ frontend for nmap
 Group: Applications/System
 Requires: nmap = %{PACKAGE_VERSION} , gtk+
+BuildPreReq: gtk+
 %description frontend
 This package includes nmapfe, a Gtk+ frontend for nmap. The nmap package must
 be installed before installing nmap-frontend.
@@ -64,6 +65,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon Jul 23 2001 Harald Hoyer <harald@redhat.com>
+- buildprereq for nmap-frontend (#49644)
+
+* Sun Jul 22 2001 Heikki Korpela <heko@iki.fi>
+- buildrequire gtk+ 
+
 * Tue Jul 10 2001 Tim Powers <timp@redhat.com>
 - fix bugs in desktop file (#48341)
 
