@@ -1,15 +1,15 @@
+%{!?withgtk1:%define withgtk1 1}
+
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 3.00
-%define nmap_version 3.00
-Release: 4
-Copyright: GPL
+Version: 3.48
+Release: 1
+License: GPL
 Group: Applications/System
-Source0: http://download.insecure.org/nmap/dist/%{name}-%{nmap_version}.tgz
+Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
 #Source1: nmapfe.desktop
 Patch0: inet_aton.patch
 Patch1: makefile.patch
-Patch2: nmap-3.00-nowarn.patch
 URL: http://www.insecure.org/nmap/
 BuildRoot: %{_tmppath}/%{name}-root
 Epoch: 2
@@ -22,18 +22,19 @@ ping scanning (determine which hosts are up), many port scanning techniques
 and port specification, decoy scanning, determination of TCP sequence
 predictability characteristics, reverse-identd scanning, and more.
 
+%if %{withgtk1}
 %package frontend
 Summary: Gtk+ frontend for nmap
 Group: Applications/System
-Requires: nmap = %{PACKAGE_VERSION} , gtk+
+Requires: nmap = %{epoch}:%{version}, gtk+
 BuildPreReq: gtk+
 %description frontend
 This package includes nmapfe, a Gtk+ frontend for nmap. The nmap package must
 be installed before installing nmap-frontend.
+%endif
 
 %prep
-%setup -q -n %{name}-%{nmap_version}
-%patch2 -p 1 -b .nowarn
+%setup -q
 
 %build
 %configure
@@ -63,6 +64,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/nmap
 %{_mandir}/man1/nmap.1.gz
 
+%if %{withgtk1}
 %files frontend
 %defattr(-,root,root)
 %{_bindir}/nmapfe
@@ -70,8 +72,30 @@ rm -rf $RPM_BUILD_ROOT
 #%{_sysconfdir}/X11/applnk/Utilities/nmapfe.desktop
 %{_mandir}/man1/nmapfe.1.gz
 %{_mandir}/man1/xnmap.1.gz
+%endif
 
 %changelog
+* Wed Oct  8 2003 Harald Hoyer <harald@redhat.de> 2:3.48-1
+- version 3.48
+
+* Tue Sep 23 2003 Florian La Roche <Florian.LaRoche@redhat.de>
+- allow disabling frontend if gtk1 is not available
+
+* Mon Jul 30 2003 Harald Hoyer <harald@redhat.de> 2:3.30-1
+- version 3.30
+
+* Wed Jun 04 2003 Elliot Lee <sopwith@redhat.com>
+- rebuilt
+
+* Mon May 26 2003 Harald Hoyer <harald@redhat.de> 2:3.27-1
+- version 3.27
+
+* Mon May 12 2003 Harald Hoyer <harald@redhat.de> 2:3.20-2
+- changed macro comments to double %% for changelog entries
+
+* Mon Apr 14 2003 Harald Hoyer <harald@redhat.de> 2:3.20-1
+- version 3.2
+
 * Wed Jan 22 2003 Tim Powers <timp@redhat.com>
 - rebuilt
 
@@ -153,7 +177,7 @@ rm -rf $RPM_BUILD_ROOT
 * Tue May 16 2000 Tim Powers <timp@redhat.com>
 - updated to 2.53
 - using applnk now
-- use %configure, and %{_prefix} where possible
+- use %%configure, and %%{_prefix} where possible
 - removed redundant defines at top of spec file
 
 * Mon Dec 13 1999 Tim Powers <timp@redhat.com>
@@ -165,7 +189,7 @@ rm -rf $RPM_BUILD_ROOT
 - quiet setup
 - no need to create dirs in the install section, "make
 	prefix=$RPM_BUILD_ROOT&{prefix} install" does this.
-- using defined %{prefix}, %{version} etc. for easier/quicker maint.
+- using defined %%{prefix}, %%{version} etc. for easier/quicker maint.
 - added docs
 - gzip man pages
 - strip after files have been installed into buildroot
