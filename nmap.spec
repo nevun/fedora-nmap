@@ -2,8 +2,8 @@
 
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 3.78
-Release: 2
+Version: 3.81
+Release: 1
 License: GPL
 Group: Applications/System
 Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
@@ -78,6 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Wed Mar 02 2005 Harald Hoyer <harald@redhat.com> - 2:3.81-1
+- version 3.81
+
 * Wed Feb 02 2005 Harald Hoyer <harald@redhat.com> - 2:3.78-2
 - evil port of nmapfe to gtk2
 
