@@ -2,7 +2,7 @@
 
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 3.55
+Version: 3.70
 Release: 1
 License: GPL
 Group: Applications/System
@@ -57,8 +57,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files 
 %defattr(-,root,root)
-%doc COPYING
-%doc docs/README docs/copying.html docs/nmap-fingerprinting-article.txt
+%doc COPYING*
+%doc docs/README docs/nmap-fingerprinting-article.txt
 %doc docs/nmap.deprecated.txt docs/nmap.usage.txt docs/nmap_doc.html
 %doc docs/nmap_manpage.html 
 %{_bindir}/nmap
@@ -76,6 +76,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Sep 13 2004 Harald Hoyer <harald@redhat.com> - 2:3.70-1
+- version 3.70
+
 * Tue Jul 13 2004 Harald Hoyer <harald@redhat.com> - 2:3.55-1
 - new version
 
