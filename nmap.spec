@@ -2,7 +2,7 @@
 
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 3.70
+Version: 3.78
 Release: 1
 License: GPL
 Group: Applications/System
@@ -46,11 +46,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %makeinstall nmapdatadir=$RPM_BUILD_ROOT%{_datadir}/nmap
 
-#mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/X11/applnk/Utilities/
-#install -m644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/X11/applnk/Utilities/
+mv $RPM_BUILD_ROOT%{_datadir}/applications/nmapfe.desktop .
 
-# remove unused files
-rm -f $RPM_BUILD_ROOT/usr/share/gnome/apps/Utilities/nmapfe.desktop
+ desktop-file-install --vendor nmap --delete-original       \
+    --dir $RPM_BUILD_ROOT%{_datadir}/applications             \
+    --add-category X-Red-Hat-Base                             \
+    nmapfe.desktop;
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -70,12 +72,15 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{_bindir}/nmapfe
 %{_bindir}/xnmap
-#%{_sysconfdir}/X11/applnk/Utilities/nmapfe.desktop
+%{_datadir}/applications/nmapfe.desktop
 %{_mandir}/man1/nmapfe.1.gz
 %{_mandir}/man1/xnmap.1.gz
 %endif
 
 %changelog
+* Fri Dec 17 2004 Harald Hoyer <harald@redhat.com> - 2:3.78-1
+- version 3.78
+
 * Mon Sep 13 2004 Harald Hoyer <harald@redhat.com> - 2:3.70-1
 - version 3.70
 
