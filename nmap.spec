@@ -1,15 +1,16 @@
-%{!?withgtk1:%define withgtk1 1}
+%{!?withgtk1:%define withgtk1 0}
 
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 3.78
-Release: 1
+Release: 2
 License: GPL
 Group: Applications/System
 Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
 #Source1: nmapfe.desktop
 Patch0: inet_aton.patch
 Patch1: makefile.patch
+Patch2: nmap-3.78-gtk2.patch
 URL: http://www.insecure.org/nmap/
 BuildRoot: %{_tmppath}/%{name}-root
 Epoch: 2
@@ -23,7 +24,6 @@ ping scanning (determine which hosts are up), many port scanning techniques
 and port specification, decoy scanning, determination of TCP sequence
 predictability characteristics, reverse-identd scanning, and more.
 
-%if %{withgtk1}
 %package frontend
 Summary: Gtk+ frontend for nmap
 Group: Applications/System
@@ -32,10 +32,12 @@ BuildRequires: gtk+-devel
 %description frontend
 This package includes nmapfe, a Gtk+ frontend for nmap. The nmap package must
 be installed before installing nmap-frontend.
-%endif
 
 %prep
 %setup -q
+%if ! %{withgtk1}
+%patch2 -p1 -b .gtk2
+%endif
 
 %build
 %configure  --with-libpcap=/usr
@@ -67,7 +69,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/nmap
 %{_mandir}/man1/nmap.1.gz
 
-%if %{withgtk1}
 %files frontend
 %defattr(-,root,root)
 %{_bindir}/nmapfe
@@ -75,9 +76,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/nmapfe.desktop
 %{_mandir}/man1/nmapfe.1.gz
 %{_mandir}/man1/xnmap.1.gz
-%endif
 
 %changelog
+* Wed Feb 02 2005 Harald Hoyer <harald@redhat.com> - 2:3.78-2
+- evil port of nmapfe to gtk2
+
 * Fri Dec 17 2004 Harald Hoyer <harald@redhat.com> - 2:3.78-1
 - version 3.78
 
