@@ -1,15 +1,17 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 2.54BETA31
+Version: 2.99.2
+%define nmap_version 2.99RC1
 Release: 1
 Copyright: GPL
 Group: Applications/System
-Source0: http://www.insecure.org/nmap/%{name}-%{version}.tgz
-Source1: nmapfe.desktop
+Source0: http://www.insecure.org/nmap/%{name}-%{nmap_version}.tgz
+#Source1: nmapfe.desktop
 Patch0: inet_aton.patch
 Patch1: makefile.patch
 URL: http://www.insecure.org/nmap/
 BuildRoot: %{_tmppath}/%{name}-root
+Epoch: 2
 
 %description
 Nmap is a utility for network exploration or security auditing.  It supports
@@ -29,7 +31,7 @@ This package includes nmapfe, a Gtk+ frontend for nmap. The nmap package must
 be installed before installing nmap-frontend.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{nmap_version}
 
 %build
 %configure
@@ -40,8 +42,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %makeinstall nmapdatadir=$RPM_BUILD_ROOT%{_datadir}/nmap
 
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/X11/applnk/Utilities/
-install -m644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/X11/applnk/Utilities/
+#mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/X11/applnk/Utilities/
+#install -m644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/X11/applnk/Utilities/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -60,11 +62,34 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{_bindir}/nmapfe
 %{_bindir}/xnmap
-%{_sysconfdir}/X11/applnk/Utilities/nmapfe.desktop
+#%{_sysconfdir}/X11/applnk/Utilities/nmapfe.desktop
 %{_mandir}/man1/nmapfe.1.gz
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon Jul 29 2002 Harald Hoyer <harald@redhat.de> 2.99.2-1
+- bumped version
+
+* Fri Jul 26 2002 Harald Hoyer <harald@redhat.de> 2.99.1-2
+- bumped version to 2.99RC1
+
+* Fri Jul 19 2002 Florian La Roche <Florian.LaRoche@redhat.de>
+- add an epoch
+
+* Mon Jul  1 2002 Harald Hoyer <harald@redhat.de> 2.54.36-1
+- removed desktop file
+- removed "BETA" name from version
+- update to BETA36
+
+* Fri Jun 21 2002 Tim Powers <timp@redhat.com>
+- automated rebuild
+
+* Sun May 26 2002 Tim Powers <timp@redhat.com>
+- automated rebuild
+
+* Wed May 22 2002 Harald Hoyer <harald@redhat.de> 2.54BETA34-1
+- update to 2.54BETA34
+
 * Mon Mar 25 2002 Harald Hoyer <harald@redhat.com>
 - more recent version (#61490)
 

@@ -1,6 +1,0 @@
-[Desktop Entry]
-Name=Nmapfe
-Comment=Gtk+ frontend to nmap
-Exec=nmapfe
-Terminal=0
-Type=Application
