@@ -2,13 +2,14 @@ Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 3.00
 %define nmap_version 3.00
-Release: 1
+Release: 4
 Copyright: GPL
 Group: Applications/System
-Source0: http://www.insecure.org/nmap/%{name}-%{nmap_version}.tgz
+Source0: http://download.insecure.org/nmap/dist/%{name}-%{nmap_version}.tgz
 #Source1: nmapfe.desktop
 Patch0: inet_aton.patch
 Patch1: makefile.patch
+Patch2: nmap-3.00-nowarn.patch
 URL: http://www.insecure.org/nmap/
 BuildRoot: %{_tmppath}/%{name}-root
 Epoch: 2
@@ -32,6 +33,7 @@ be installed before installing nmap-frontend.
 
 %prep
 %setup -q -n %{name}-%{nmap_version}
+%patch2 -p 1 -b .nowarn
 
 %build
 %configure
@@ -44,6 +46,9 @@ rm -rf $RPM_BUILD_ROOT
 
 #mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/X11/applnk/Utilities/
 #install -m644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/X11/applnk/Utilities/
+
+# remove unused files
+rm -f $RPM_BUILD_ROOT/usr/share/gnome/apps/Utilities/nmapfe.desktop
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -67,6 +72,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Wed Jan 22 2003 Tim Powers <timp@redhat.com>
+- rebuilt
+
+* Thu Jan  9 2003 Harald Hoyer <harald@redhat.de> 3.0-3
+- nmap-3.00-nowarn.patch added
+
+* Mon Nov 18 2002 Tim Powers <timp@redhat.com>
+- rebuild on all arches
+- remove old desktop file from $$RPM_BUILD_ROOT so rpm won't complain
+
 * Thu Aug  1 2002 Harald Hoyer <harald@redhat.de>
 - version 3.0
 
