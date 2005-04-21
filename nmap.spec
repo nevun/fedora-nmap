@@ -3,11 +3,13 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 3.81
-Release: 1
+Release: 2
 License: GPL
 Group: Applications/System
 Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
-#Source1: nmapfe.desktop
+Source1: nmapfe.desktop
+Source2: nmapfe-32.png
+Source3: nmapfe-48.png
 Patch0: inet_aton.patch
 Patch1: makefile.patch
 Patch2: nmap-3.78-gtk2.patch
@@ -48,13 +50,19 @@ rm -rf $RPM_BUILD_ROOT
 
 %makeinstall nmapdatadir=$RPM_BUILD_ROOT%{_datadir}/nmap
 
-mv $RPM_BUILD_ROOT%{_datadir}/applications/nmapfe.desktop .
+#rm -f $RPM_BUILD_ROOT%{_datadir}/applications/nmapfe.desktop 
 
- desktop-file-install --vendor nmap --delete-original       \
+ desktop-file-install --vendor nmap     \
     --dir $RPM_BUILD_ROOT%{_datadir}/applications             \
     --add-category X-Red-Hat-Base                             \
-    nmapfe.desktop;
+    %{SOURCE1};
 
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/32x32/apps \
+	$RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps
+install -m 0644 %{SOURCE2} \
+	$RPM_BUILD_ROOT%{_datadir}/icons/hicolor/32x32/apps/nmapfe.png
+install -m 0644 %{SOURCE3} \
+	$RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps/nmapfe.png
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -74,10 +82,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/nmapfe
 %{_bindir}/xnmap
 %{_datadir}/applications/nmapfe.desktop
+%{_datadir}/icons/hicolor/*/apps/nmapfe.png
 %{_mandir}/man1/nmapfe.1.gz
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Apr 21 2005 Harald Hoyer <harald@redhat.com> - 2:3.81-2
+- fixed desktop file and added icons (bug #149157)
+
 * Wed Mar 02 2005 Harald Hoyer <harald@redhat.com> - 2:3.81-1
 - version 3.81
 
