@@ -91,6 +91,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed Aug 03 2005 Harald Hoyer <harald@redhat.com> - 2:3.81-4
 - removed references how to scan microsoft.com (bz #164962)
+- finally got rid of gtk+-devel dependency
 
 * Thu Apr 21 2005 Harald Hoyer <harald@redhat.com> - 2:3.81-3
 - removed gtk+ requirement
