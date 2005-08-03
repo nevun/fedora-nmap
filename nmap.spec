@@ -3,7 +3,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 3.81
-Release: 3
+Release: 4
 License: GPL
 Group: Applications/System
 Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
@@ -13,6 +13,7 @@ Source3: nmapfe-48.png
 Patch0: inet_aton.patch
 Patch1: makefile.patch
 Patch2: nmap-3.78-gtk2.patch
+Patch3: nmap-3.81-noms.patch
 URL: http://www.insecure.org/nmap/
 BuildRoot: %{_tmppath}/%{name}-root
 Epoch: 2
@@ -40,6 +41,7 @@ be installed before installing nmap-frontend.
 %if ! %{withgtk1}
 %patch2 -p1 -b .gtk2
 %endif
+%patch3 -p1 -b .noms
 
 %build
 %configure  --with-libpcap=/usr
@@ -87,6 +89,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Wed Aug 03 2005 Harald Hoyer <harald@redhat.com> - 2:3.81-4
+- removed references how to scan microsoft.com (bz #164962)
+
 * Thu Apr 21 2005 Harald Hoyer <harald@redhat.com> - 2:3.81-3
 - removed gtk+ requirement
 
