@@ -3,7 +3,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 3.93
-Release: 1
+Release: 2
 License: GPL
 Group: Applications/System
 Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
@@ -89,6 +89,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Nov 10 2005 Tomas Mraz <tmraz@redhat.com> - 2:3.93-2
+- rebuilt against new openssl
+
 * Tue Sep 13 2005 Harald Hoyer <harald@redhat.com> - 2:3.93-1
 - version 3.93
 
