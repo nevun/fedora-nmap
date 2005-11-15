@@ -3,7 +3,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 3.93
-Release: 2
+Release: 3
 License: GPL
 Group: Applications/System
 Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
@@ -14,6 +14,7 @@ Patch0: inet_aton.patch
 Patch1: makefile.patch
 Patch2: nmap-3.78-gtk2.patch
 Patch3: nmap-3.81-noms.patch
+Patch4: nmap-3.93-attr.patch
 URL: http://www.insecure.org/nmap/
 BuildRoot: %{_tmppath}/%{name}-root
 Epoch: 2
@@ -42,6 +43,7 @@ be installed before installing nmap-frontend.
 %patch2 -p1 -b .gtk2
 %endif
 %patch3 -p1 -b .noms
+%patch4 -p1 -b .attr
 
 %build
 %configure  --with-libpcap=/usr
@@ -89,6 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Tue Nov 11 2005 Harald Hoyer <harald@redhat.com> - 2:3.93-3
+- fixed wrong __attribute__ test
+
 * Thu Nov 10 2005 Tomas Mraz <tmraz@redhat.com> - 2:3.93-2
 - rebuilt against new openssl
 
