@@ -1,65 +1,22 @@
-diff -ur nmap-3.81/docs/nmap.1 nmap-3.81.noms/docs/nmap.1
---- nmap-3.81/docs/nmap.1	2005-02-07 08:26:08.000000000 +0100
-+++ nmap-3.81.noms/docs/nmap.1	2005-08-03 14:03:50.000000000 +0200
-@@ -131,7 +131,7 @@
- on a network are up.  Nmap can do this by sending ICMP echo
- request packets to every IP address on the networks you
- specify.  Hosts that respond are up.  Unfortunately, some
--sites such as microsoft.com block echo request packets.
-+sites block echo request packets.
- Thus nmap can also send a TCP ack packet to (by default)
- port 80.  If we get an RST back, that machine is up.  A
- third technique involves sending a SYN packet and waiting
-@@ -352,12 +352,7 @@
- Do not try to ping hosts at all before scanning them.  This
- allows the scanning of networks that don't allow ICMP echo
- requests (or responses) through their firewall.
--microsoft.com is an example of such a network, and thus you
--should always use
--.B \-P0
--or
--.B \-PS80
--when portscanning microsoft.com.  Note that "ping" in this context may
-+Note that "ping" in this context may
- involve more than the traditional ICMP echo request packet.  Nmap
- supports many such probes, including arbitrary combinations of TCP,
- UDP, and ICMP probes.  By default, Nmap sends an ICMP echo request and
-diff -ur nmap-3.81/docs/nmap_doc.html nmap-3.81.noms/docs/nmap_doc.html
---- nmap-3.81/docs/nmap_doc.html	2001-03-27 05:07:57.000000000 +0200
-+++ nmap-3.81.noms/docs/nmap_doc.html	2005-08-03 14:02:18.000000000 +0200
-@@ -361,7 +361,7 @@
- things up.  You can change the parrallel ping lookahead with '-L' and
- the ping timeout with '-T'.  You can turn pinging off completely with
- the '-D' command line option.  This is useful for scanning networks
--like microsoft.com where ICMP echo requests can't get through.  Nmap
-+where ICMP echo requests can't get through.  Nmap
- is also capable of bailing on hosts that seem down based on strange
- port scanning errors.  It is also meant to be tolerant of people who
- accidentally scan network addresses, broadcast addresses, etc.<BR><BR>
-diff -ur nmap-3.81/docs/nmap_manpage.html nmap-3.81.noms/docs/nmap_manpage.html
---- nmap-3.81/docs/nmap_manpage.html	2005-02-07 09:54:33.000000000 +0100
-+++ nmap-3.81.noms/docs/nmap_manpage.html	2005-08-03 14:02:49.000000000 +0200
-@@ -130,8 +130,8 @@
-        <B>-sP</B>    Ping scanning: Sometimes you only want to know which hosts on  a
-               network  are  up.  Nmap can do this by sending ICMP echo request
-               packets to every IP address on the networks you specify.   Hosts
--              that   respond  are  up.   Unfortunately,  some  sites  such  as
--              microsoft.com block echo request packets.  Thus  nmap  can  also
-+              that   respond  are  up.   Unfortunately,  some  sites  
-+              block echo request packets.  Thus  nmap  can  also
-               send a TCP ack packet to (by default) port 80.  If we get an RST
-               back, that machine is up.  A third technique involves sending  a
-               SYN  packet  and  waiting  for a RST or a SYN/ACK.  For non-root
-diff -ur nmap-3.81/docs/nmap.usage.txt nmap-3.81.noms/docs/nmap.usage.txt
---- nmap-3.81/docs/nmap.usage.txt	2005-02-07 09:54:32.000000000 +0100
-+++ nmap-3.81.noms/docs/nmap.usage.txt	2005-08-03 14:01:38.000000000 +0200
-@@ -12,7 +12,7 @@
-   -p <range> ports to scan.  Example range: 1-1024,1080,6666,31337
-   -F Only scans ports listed in nmap-services
-   -v Verbose. Its use is recommended.  Use twice for greater effect.
--  -P0 Don't ping hosts (needed to scan www.microsoft.com and others)
-+  -P0 Don't ping hosts 
- * -Ddecoy_host1,decoy2[,...] Hide scan using many decoys
-   -6 scans via IPv6 rather than IPv4
-   -T <Paranoid|Sneaky|Polite|Normal|Aggressive|Insane> General timing policy
-
+--- nmap-3.95/docs/nmap.usage.txt.noms	2005-12-08 09:20:22.000000000 +0100
++++ nmap-3.95/docs/nmap.usage.txt	2005-12-19 11:44:03.000000000 +0100
+@@ -2,7 +2,7 @@
+ Usage: nmap [Scan Type(s)] [Options] {target specification}
+ TARGET SPECIFICATION:
+   Can pass hostnames, IP addresses, networks, etc.
+-  Ex: scanme.nmap.org, microsoft.com/24, 192.168.0.1; 10.0.0-255.1-254
++  Ex: scanme.nmap.org, 192.168.0.1; 10.0.0-255.1-254
+   -iL <inputfilename>: Input from list of hosts/networks
+   -iR <num hosts>: Choose random targets
+   --exclude <host1[,host2][,host3],...>: Exclude hosts/networks
+--- nmap-3.95/docs/nmap.1.noms	2005-12-08 09:20:29.000000000 +0100
++++ nmap-3.95/docs/nmap.1	2005-12-19 11:43:01.000000000 +0100
+@@ -94,7 +94,7 @@
+ Usage: nmap [Scan Type(s)] [Options] {target specification}
+ TARGET SPECIFICATION:
+   Can pass hostnames, IP addresses, networks, etc.
+-  Ex: scanme.nmap.org, microsoft.com/24, 192.168.0.1; 10.0.0\-255.1\-254
++  Ex: scanme.nmap.org, 192.168.0.1; 10.0.0\-255.1\-254
+   \-iL <inputfilename>: Input from list of hosts/networks
+   \-iR <num hosts>: Choose random targets
+   \-\-exclude <host1[,host2][,host3],...>: Exclude hosts/networks
