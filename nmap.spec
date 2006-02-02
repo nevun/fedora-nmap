@@ -1,17 +1,16 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 3.95
+Version: 4.00
 Release: 1
 License: GPL
 Group: Applications/System
-Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tgz
+Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
 Source1: nmapfe.desktop
 Source2: nmapfe-32.png
 Source3: nmapfe-48.png
 Patch0: inet_aton.patch
 Patch1: makefile.patch
 Patch3: nmap-3.81-noms.patch
-Patch4: nmap-3.93-attr.patch
 URL: http://www.insecure.org/nmap/
 BuildRoot: %{_tmppath}/%{name}-root
 Epoch: 2
@@ -37,7 +36,6 @@ be installed before installing nmap-frontend.
 %prep
 %setup -q
 %patch3 -p1 -b .noms
-%patch4 -p1 -b .attr
 
 %build
 %configure  --with-libpcap=/usr
@@ -68,8 +66,10 @@ rm -rf $RPM_BUILD_ROOT
 %files 
 %defattr(-,root,root)
 %doc COPYING*
-%doc docs/README docs/nmap-fingerprinting-article.txt
-%doc docs/nmap.deprecated.txt docs/nmap.usage.txt 
+%doc docs/README 
+#%doc docs/nmap-fingerprinting-article.txt
+#%doc docs/nmap.deprecated.txt 
+%doc docs/nmap.usage.txt 
 %{_bindir}/nmap
 %{_datadir}/nmap
 %{_mandir}/man1/nmap.1.gz
@@ -84,6 +84,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Feb 02 2006 Harald Hoyer <harald@redhat.com> - 2:4.00-1
+- version 4.00
+
 * Mon Dec 19 2005 Harald Hoyer <harald@redhat.com> - 2:3.95-1
 - version 3.95
 
