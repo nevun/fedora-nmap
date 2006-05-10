@@ -9,4 +9,4 @@ Exec=nmapfe
 Icon=nmapfe
 Terminal=false
 Type=Application
-Categories=Application;Network;System;Security;GTK
+Categories=Application;System;Security;GTK
