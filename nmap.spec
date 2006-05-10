@@ -1,7 +1,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 4.00
-Release: 1.2
+Version: 4.03
+Release: 1
 License: GPL
 Group: Applications/System
 Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
@@ -11,6 +11,7 @@ Source3: nmapfe-48.png
 Patch0: inet_aton.patch
 Patch1: makefile.patch
 Patch3: nmap-3.81-noms.patch
+Patch4: nmap-4.03-mktemp.patch
 URL: http://www.insecure.org/nmap/
 BuildRoot: %{_tmppath}/%{name}-root
 Epoch: 2
@@ -36,6 +37,7 @@ be installed before installing nmap-frontend.
 %prep
 %setup -q
 %patch3 -p1 -b .noms
+%patch4 -p1
 
 %build
 %configure  --with-libpcap=/usr
@@ -84,6 +86,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Wed May 10 2006 Karsten Hopp <karsten@redhat.de> 4.03-1
+- update to 4.03, this fixes #184286
+- remove duplicate menu entry in 'Internet' (#183056)
+- fix possible tmpdir race condition during build (#158996)
+
 * Fri Feb 10 2006 Jesse Keating <jkeating@redhat.com> - 2:4.00-1.2
 - bump again for double-long bug on ppc(64)
 
