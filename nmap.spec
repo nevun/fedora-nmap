@@ -1,7 +1,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 4.03
-Release: 1
+Release: 2
 License: GPL
 Group: Applications/System
 Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
@@ -16,6 +16,7 @@ URL: http://www.insecure.org/nmap/
 BuildRoot: %{_tmppath}/%{name}-root
 Epoch: 2
 BuildRequires: openssl-devel, gtk2-devel, pcre-devel, libpcap
+BuildRequires: /usr/bin/desktop-file-install
 
 %description
 Nmap is a utility for network exploration or security auditing.  It supports
@@ -86,6 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Wed May 17 2006 Harald Hoyer <harald@redhat.de> 4.03-2
+- added more build requirements (bug #191932)
+
 * Wed May 10 2006 Karsten Hopp <karsten@redhat.de> 4.03-1
 - update to 4.03, this fixes #184286
 - remove duplicate menu entry in 'Internet' (#183056)
