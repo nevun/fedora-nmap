@@ -1,7 +1,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 4.11
-Release: 1.1
+Version: 4.20
+Release: 1
 License: GPL
 Group: Applications/System
 Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
@@ -87,6 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Tue Jan 09 2007 Florian La Roche <laroche@redhat.com>
+- version 4.20
+
 * Wed Jul 12 2006 Jesse Keating <jkeating@redhat.com> - 2:4.11-1.1
 - rebuild
 
