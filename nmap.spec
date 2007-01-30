@@ -1,7 +1,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 4.20
-Release: 1
+Release: 2%{?dist}
 License: GPL
 Group: Applications/System
 Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
@@ -12,6 +12,7 @@ Patch0: inet_aton.patch
 Patch1: makefile.patch
 Patch3: nmap-3.81-noms.patch
 Patch4: nmap-4.03-mktemp.patch
+Patch5: nmap-4.20-nostrip.patch
 URL: http://www.insecure.org/nmap/
 BuildRoot: %{_tmppath}/%{name}-root
 Epoch: 2
@@ -39,6 +40,7 @@ be installed before installing nmap-frontend.
 %setup -q
 %patch3 -p1 -b .noms
 %patch4 -p1
+%patch5 -p1
 
 %build
 %configure  --with-libpcap=/usr
@@ -87,6 +89,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Tue Jan 30 2007 Florian La Roche <laroche@redhat.com>
+- do not strip away debuginfo
+
 * Tue Jan 09 2007 Florian La Roche <laroche@redhat.com>
 - version 4.20
 
