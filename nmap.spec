@@ -1,22 +1,20 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 4.20
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: GPL
 Group: Applications/System
 Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
 Source1: nmapfe.desktop
 Source2: nmapfe-32.png
 Source3: nmapfe-48.png
-Patch0: inet_aton.patch
-Patch1: makefile.patch
 Patch3: nmap-3.81-noms.patch
 Patch4: nmap-4.03-mktemp.patch
 Patch5: nmap-4.20-nostrip.patch
 URL: http://www.insecure.org/nmap/
-BuildRoot: %{_tmppath}/%{name}-root
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Epoch: 2
-BuildRequires: openssl-devel, gtk2-devel, pcre-devel, libpcap
+BuildRequires: openssl-devel, gtk2-devel, pcre-devel, libpcap-devel
 BuildRequires: /usr/bin/desktop-file-install
 
 %description
@@ -31,7 +29,7 @@ predictability characteristics, reverse-identd scanning, and more.
 Summary: Gtk+ frontend for nmap
 Group: Applications/System
 Requires: nmap = %{epoch}:%{version}, gtk2
-BuildRequires: gtk2-devel
+BuildRequires: gtk2-devel libpng-devel
 %description frontend
 This package includes nmapfe, a Gtk+ frontend for nmap. The nmap package must
 be installed before installing nmap-frontend.
@@ -44,19 +42,19 @@ be installed before installing nmap-frontend.
 
 %build
 %configure  --with-libpcap=/usr
-make
+make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%makeinstall nmapdatadir=$RPM_BUILD_ROOT%{_datadir}/nmap
+make DESTDIR=$RPM_BUILD_ROOT install
 
 #rm -f $RPM_BUILD_ROOT%{_datadir}/applications/nmapfe.desktop 
 
- desktop-file-install --vendor nmap     \
-    --dir $RPM_BUILD_ROOT%{_datadir}/applications             \
-    --add-category X-Red-Hat-Base                             \
-    %{SOURCE1};
+desktop-file-install --vendor nmap \
+	--dir $RPM_BUILD_ROOT%{_datadir}/applications \
+	--add-category X-Red-Hat-Base \
+	%{SOURCE1};
 
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/32x32/apps \
 	$RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps
@@ -89,10 +87,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
-* Tue Jan 30 2007 Florian La Roche <laroche@redhat.com>
+* Tue Feb 27 2007 Harald Hoyer <harald@redhat.com> - 2:4.20-3%{?dist}
+- specfile cleanup
+- fixed Florian La Roche's patch
+
+* Tue Jan 30 2007 Florian La Roche <laroche@redhat.com> - 2:4.20-2%{?dist}
 - do not strip away debuginfo
 
-* Tue Jan 09 2007 Florian La Roche <laroche@redhat.com>
+* Tue Jan 09 2007 Florian La Roche <laroche@redhat.com> - 2:4.20-1
 - version 4.20
 
 * Wed Jul 12 2006 Jesse Keating <jkeating@redhat.com> - 2:4.11-1.1
