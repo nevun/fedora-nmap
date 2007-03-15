@@ -1,7 +1,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 4.20
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: GPL
 Group: Applications/System
 Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
@@ -87,6 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Mar 15 2007 Karsten Hopp <karsten@redhat.com> 4.20-4
+- rebuild with current gtk2 to add png support (#232013)
+
 * Tue Feb 27 2007 Harald Hoyer <harald@redhat.com> - 2:4.20-3%{?dist}
 - specfile cleanup
 - fixed Florian La Roche's patch
