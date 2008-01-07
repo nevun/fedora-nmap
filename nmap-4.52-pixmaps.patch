@@ -1,0 +1,12 @@
+diff -up nmap-4.52/zenmap/setup.py.pixmaps nmap-4.52/zenmap/setup.py
+--- nmap-4.52/zenmap/setup.py.pixmaps	2008-01-07 12:53:24.000000000 +0100
++++ nmap-4.52/zenmap/setup.py	2008-01-07 12:53:35.000000000 +0100
+@@ -37,7 +37,7 @@ from zenmapCore.Name import APP_NAME, AP
+ # Directories for POSIX operating systems
+ # These are created after a "install" or "py2exe" command
+ # These directories are relative to the installation or dist directory
+-pixmaps_dir = os.path.join('share', 'pixmaps')
++pixmaps_dir = os.path.join('share', 'pixmaps', APP_NAME)
+ icons_dir = os.path.join('share', 'icons')
+ locale_dir = os.path.join('share', APP_NAME, 'locale')
+ config_dir = os.path.join('share', APP_NAME, 'config')
