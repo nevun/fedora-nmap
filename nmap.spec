@@ -1,21 +1,25 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 4.20
-Release: 6.1%{?dist}
+Version: 4.52
+Release: 1%{?dist}
 License: BSD with advertising, BSD, GPLv2
 Group: Applications/System
 Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
-Source1: nmapfe.desktop
+Source1: zenmap.desktop
 Source2: nmapfe-32.png
 Source3: nmapfe-48.png
-Patch3: nmap-3.81-noms.patch
-Patch4: nmap-4.03-mktemp.patch
-Patch5: nmap-4.20-nostrip.patch
+Patch1: nmap-4.03-mktemp.patch
+Patch2: nmap-4.52-noms.patch
+Patch3: nmap-4.52-nostrip.patch
+Patch4: nmap-4.52-pixmaps.patch
 URL: http://www.insecure.org/nmap/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Epoch: 2
-BuildRequires: openssl-devel, gtk2-devel, pcre-devel, libpcap-devel
+BuildRequires: openssl-devel, gtk2-devel
 BuildRequires: /usr/bin/desktop-file-install
+
+%define pixmap_srcdir zenmap/share/pixmaps
+%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 %description
 Nmap is a utility for network exploration or security auditing.  It supports
@@ -26,19 +30,25 @@ and port specification, decoy scanning, determination of TCP sequence
 predictability characteristics, reverse-identd scanning, and more.
 
 %package frontend
-Summary: Gtk+ frontend for nmap
+Summary: the GTK+ frontend for nmap
 Group: Applications/System
-Requires: nmap = %{epoch}:%{version}, gtk2
-BuildRequires: gtk2-devel libpng-devel
+Requires: nmap = %{epoch}:%{version} gtk2 python >= 2.5 pygtk2 python-sqlite2
+BuildRequires: python >= 2.5 pygtk2-devel libpng-devel 
 %description frontend
-This package includes nmapfe, a Gtk+ frontend for nmap. The nmap package must
+This package includes zenmap, a GTK+ frontend for nmap. The nmap package must
 be installed before installing nmap-frontend.
 
 %prep
 %setup -q
-%patch3 -p1 -b .noms
-%patch4 -p1
-%patch5 -p1
+%patch1 -p1 -b .mktemp
+%patch2 -p1 -b .noms
+%patch3 -p1 -b .nostrip
+%patch4 -p1 -b .pixmaps
+
+# we want pixmaps in /usr/share/pixmaps/zenmap/
+mkdir %{pixmap_srcdir}/zenmap
+mv %{pixmap_srcdir}/*.svg %{pixmap_srcdir}/zenmap
+mv %{pixmap_srcdir}/*.png %{pixmap_srcdir}/zenmap
 
 %build
 %configure  --with-libpcap=/usr
@@ -48,8 +58,13 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT install
-
-#rm -f $RPM_BUILD_ROOT%{_datadir}/applications/nmapfe.desktop 
+rm -f $RPM_BUILD_ROOT%{_bindir}/uninstall_zenmap
+cp docs/zenmap.1 $RPM_BUILD_ROOT%{_mandir}/man1/
+gzip $RPM_BUILD_ROOT%{_mandir}/man1/* || :
+pushd $RPM_BUILD_ROOT%{_mandir}/man1
+ln -s zenmap.1.gz nmapfe.1.gz
+ln -s zenmap.1.gz xnmap.1.gz
+popd
 
 desktop-file-install --vendor nmap \
 	--dir $RPM_BUILD_ROOT%{_datadir}/applications \
@@ -59,9 +74,9 @@ desktop-file-install --vendor nmap \
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/32x32/apps \
 	$RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps
 install -m 0644 %{SOURCE2} \
-	$RPM_BUILD_ROOT%{_datadir}/icons/hicolor/32x32/apps/nmapfe.png
+	$RPM_BUILD_ROOT%{_datadir}/icons/hicolor/32x32/apps/zenmap.png
 install -m 0644 %{SOURCE3} \
-	$RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps/nmapfe.png
+	$RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps/zenmap.png
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -75,18 +90,27 @@ rm -rf $RPM_BUILD_ROOT
 %doc docs/nmap.usage.txt 
 %{_bindir}/nmap
 %{_datadir}/nmap
+%{_libexecdir}/nmap
 %{_mandir}/man1/nmap.1.gz
 
 %files frontend
 %defattr(-,root,root)
+%{_bindir}/zenmap
 %{_bindir}/nmapfe
 %{_bindir}/xnmap
-%{_datadir}/applications/nmapfe.desktop
-%{_datadir}/icons/hicolor/*/apps/nmapfe.png
+%{python_sitelib}/*
+%{_datadir}/applications/nmap-zenmap.desktop
+%{_datadir}/icons/*
+%{_datadir}/pixmaps/zenmap
+%{_datadir}/zenmap
+%{_mandir}/man1/zenmap.1.gz
 %{_mandir}/man1/nmapfe.1.gz
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon Jan 07 2008 Tomas Smetana <tsmetana@redhat.com> - 2:4.52-1
+- new upstream version
+
 * Wed Dec 05 2007 Tomas Smetana <tsmetana@redhat.com> - 2:4.20-6.1
 - rebuild
 
