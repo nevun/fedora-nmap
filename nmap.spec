@@ -1,6 +1,6 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 4.53
+Version: 4.62
 Release: 1%{?dist}
 License: BSD with advertising, BSD, GPLv2
 Group: Applications/System
@@ -10,7 +10,7 @@ Source2: nmapfe-32.png
 Source3: nmapfe-48.png
 Patch1: nmap-4.03-mktemp.patch
 Patch2: nmap-4.52-noms.patch
-Patch3: nmap-4.52-nostrip.patch
+Patch3: nmap-4.60-nostrip.patch
 Patch4: nmap-4.52-pixmaps.patch
 URL: http://www.insecure.org/nmap/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -51,7 +51,10 @@ mv %{pixmap_srcdir}/*.svg %{pixmap_srcdir}/zenmap
 mv %{pixmap_srcdir}/*.png %{pixmap_srcdir}/zenmap
 
 %build
+export CFLAGS="$RPM_OPT_FLAGS"
+export CXXFLAGS="$RPM_OPT_FLAGS"
 %configure  --with-libpcap=/usr
+#make CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" %{?_smp_mflags}
 make %{?_smp_mflags}
 
 %install
@@ -108,6 +111,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon May 12 2008 Tomas Smetana <tsmetana@redhat.com> - 2:4.62-1
+- new upstream version
+
 * Mon Feb 04 2008 Tomas Smetana <tsmetana@redhat.com> - 2:4.52-3
 - new upstream version
 
