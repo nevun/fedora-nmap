@@ -1,6 +1,6 @@
-diff -up nmap-4.52/Makefile.in.nostrip nmap-4.52/Makefile.in
---- nmap-4.52/Makefile.in.nostrip	2008-01-07 12:42:42.000000000 +0100
-+++ nmap-4.52/Makefile.in	2008-01-07 12:46:53.000000000 +0100
+diff -up nmap-4.60/Makefile.in.nostrip nmap-4.60/Makefile.in
+--- nmap-4.60/Makefile.in.nostrip	2008-04-03 13:42:59.000000000 +0200
++++ nmap-4.60/Makefile.in	2008-04-03 13:43:06.000000000 +0200
 @@ -175,9 +175,6 @@ my_distclean:
  install-nmap: $(TARGET)
  	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(bindir) $(DESTDIR)$(mandir)/man1 $(DESTDIR)$(nmapdatadir)
@@ -8,6 +8,6 @@ diff -up nmap-4.52/Makefile.in.nostrip nmap-4.52/Makefile.in
 -# Use strip -x to avoid stripping dynamically loaded NSE functions. See
 -# http://seclists.org/nmap-dev/2007/q4/0272.html.
 -	$(STRIP) -x $(DESTDIR)$(bindir)/nmap
- 	$(INSTALL) -c -m 644 docs/$(TARGET).1 $(DESTDIR)$(mandir)/man1/
+ 	$(INSTALL) -c -m 644 docs/$(TARGET).1 docs/zenmap.1 $(DESTDIR)$(mandir)/man1/
  	$(INSTALL) -c -m 644 docs/nmap.xsl $(DESTDIR)$(nmapdatadir)/
  	$(INSTALL) -c -m 644 docs/nmap.dtd $(DESTDIR)$(nmapdatadir)/
