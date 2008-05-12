@@ -114,7 +114,7 @@ rm -rf $RPM_BUILD_ROOT
 * Mon May 12 2008 Tomas Smetana <tsmetana@redhat.com> - 2:4.62-1
 - new upstream version
 
-* Mon Feb 04 2008 Tomas Smetana <tsmetana@redhat.com> - 2:4.52-3
+* Mon Feb 04 2008 Tomas Smetana <tsmetana@redhat.com> - 2:4.53-1
 - new upstream version
 
 * Mon Jan 07 2008 Tomas Smetana <tsmetana@redhat.com> - 2:4.52-2
