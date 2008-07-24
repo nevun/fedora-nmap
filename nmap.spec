@@ -1,6 +1,6 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 4.62
+Version: 4.68
 Release: 1%{?dist}
 License: BSD with advertising, BSD, GPLv2
 Group: Applications/System
@@ -10,8 +10,7 @@ Source2: nmapfe-32.png
 Source3: nmapfe-48.png
 Patch1: nmap-4.03-mktemp.patch
 Patch2: nmap-4.52-noms.patch
-Patch3: nmap-4.60-nostrip.patch
-Patch4: nmap-4.52-pixmaps.patch
+Patch3: nmap-4.68-nostrip.patch
 URL: http://www.insecure.org/nmap/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Epoch: 2
@@ -43,12 +42,11 @@ be installed before installing nmap-frontend.
 %patch1 -p1 -b .mktemp
 %patch2 -p1 -b .noms
 %patch3 -p1 -b .nostrip
-%patch4 -p1 -b .pixmaps
 
 # we want pixmaps in /usr/share/pixmaps/zenmap/
-mkdir %{pixmap_srcdir}/zenmap
-mv %{pixmap_srcdir}/*.svg %{pixmap_srcdir}/zenmap
-mv %{pixmap_srcdir}/*.png %{pixmap_srcdir}/zenmap
+#mkdir %{pixmap_srcdir}/zenmap
+#mv %{pixmap_srcdir}/*.svg %{pixmap_srcdir}/zenmap
+#mv %{pixmap_srcdir}/*.png %{pixmap_srcdir}/zenmap
 
 %build
 export CFLAGS="$RPM_OPT_FLAGS"
@@ -104,13 +102,15 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/*
 %{_datadir}/applications/nmap-zenmap.desktop
 %{_datadir}/icons/*
-%{_datadir}/pixmaps/zenmap
 %{_datadir}/zenmap
 %{_mandir}/man1/zenmap.1.gz
 %{_mandir}/man1/nmapfe.1.gz
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Jul 24 2008 Tomas Smetana <tsmetana@redhat.com> - 2:4.68-1
+- new upstream version
+
 * Mon May 12 2008 Tomas Smetana <tsmetana@redhat.com> - 2:4.62-1
 - new upstream version
 
