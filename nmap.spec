@@ -1,8 +1,9 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 4.68
-Release: 2%{?dist}
-License: BSD with advertising and BSD and GPLv2
+Release: 3%{?dist}
+# libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999)
+License: GPLv2
 Group: Applications/System
 Source0: http://download.insecure.org/nmap/dist/%{name}-%{version}.tar.bz2
 Source1: zenmap.desktop
@@ -14,7 +15,7 @@ Patch3: nmap-4.68-nostrip.patch
 URL: http://www.insecure.org/nmap/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Epoch: 2
-BuildRequires: openssl-devel, gtk2-devel
+BuildRequires: openssl-devel, gtk2-devel, lua-devel, libpcap-devel, pcre-devel
 BuildRequires: /usr/bin/desktop-file-install
 
 %define pixmap_srcdir zenmap/share/pixmaps
@@ -47,6 +48,8 @@ be installed before installing nmap-frontend.
 #mkdir %{pixmap_srcdir}/zenmap
 #mv %{pixmap_srcdir}/*.svg %{pixmap_srcdir}/zenmap
 #mv %{pixmap_srcdir}/*.png %{pixmap_srcdir}/zenmap
+
+rm -rf liblua libpcap libpcre
 
 %build
 export CFLAGS="$RPM_OPT_FLAGS"
@@ -108,6 +111,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon Aug 11 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 2:4.68-3
+- add missing BuildRequires to use system libs rather than local copies
+- really fix license tag
+
 * Mon Aug 11 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 2:4.68-2
 - fix license tag
 
