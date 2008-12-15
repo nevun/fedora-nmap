@@ -1,7 +1,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 4.76
-Release: 1%{?dist}
+Release: 2%{?dist}
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999)
 License: GPLv2
 Group: Applications/System
@@ -119,6 +119,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon Dec 15 2008 Michal Hlavinka <mhlavink@redhat.com> - 2:4.77-2
+- bump release for rebuild
+
 * Mon Dec 15 2008 Michal Hlavinka <mhlavink@redhat.com> - 2:4.76-1
 - new upstream version 4.76
 - use consolehelper for root auth
