@@ -1,7 +1,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 4.76
-Release: 2%{?dist}
+Release: 3%{?dist}
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999)
 License: GPLv2
 Group: Applications/System
@@ -119,6 +119,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Sat Jan 17 2009 Tomas Mraz <tmraz@redhat.com> - 2:4.76-3
+- rebuild with new openssl
+
 * Mon Dec 15 2008 Michal Hlavinka <mhlavink@redhat.com> - 2:4.77-2
 - bump release for rebuild
 
