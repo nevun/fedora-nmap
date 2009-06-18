@@ -1,11 +1,12 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 4.76
-Release: 4%{?dist}
+Version: 4.85
+%define betaver BETA10
+Release: 0.%{betaver}%{?dist}
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999)
 License: GPLv2
 Group: Applications/System
-Source0: http://nmap.org/dist/%{name}-%{version}.tar.bz2
+Source0: http://nmap.org/dist/%{name}-%{version}%{betaver}.tar.bz2
 Source1: zenmap.desktop
 Source2: zenmap-root.pamd
 Source3: zenmap-root.consoleapps
@@ -46,9 +47,9 @@ This package includes zenmap, a GTK+ frontend for nmap. The nmap package must
 be installed before installing nmap-frontend.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}%{betaver}
 %patch1 -p1 -b .mktemp
-%patch2 -p1 -b .noms
+#%patch2 -p1 -b .noms
 %patch3 -p1 -b .nostrip
 
 rm -rf liblua libpcap libpcre
@@ -99,8 +100,13 @@ rm -rf $RPM_BUILD_ROOT
 %doc docs/README
 %doc docs/nmap.usage.txt
 %{_bindir}/nmap
-%{_datadir}/nmap
+%{_bindir}/ncat
+%{_bindir}/ndiff
+%{_mandir}/man1/ndiff.1.gz
 %{_mandir}/man1/nmap.1.gz
+%{_mandir}/man1/ncat.1.gz
+%{_datadir}/nmap
+%{_datadir}/ncat
 
 %files frontend
 %defattr(-,root,root)
@@ -119,6 +125,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Jun 18 2009 Michal Hlavinka <mhlavink@redhat.com> - 2:4.85-0.BETA10
+- updated to 4.85beta10
+
 * Wed Feb 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2:4.76-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
 
