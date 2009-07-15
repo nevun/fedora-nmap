@@ -1,7 +1,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 4.85
-%define betaver BETA10
+Version: 4.90
+%define betaver RC1
 Release: 0.%{betaver}%{?dist}
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999)
 License: GPLv2
@@ -125,6 +125,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Wed Jul 15 2009 Michal Hlavinka <mhlavink@redhat.com> - 2:4.90-0.RC1
+- updated to 4.90RC1
+
 * Thu Jun 18 2009 Michal Hlavinka <mhlavink@redhat.com> - 2:4.85-0.BETA10
 - updated to 4.85beta10
 
