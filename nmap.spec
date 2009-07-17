@@ -1,12 +1,11 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 4.90
-%define betaver RC1
-Release: 0.%{betaver}%{?dist}
+Version: 5.00
+Release: 1%{?dist}
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999)
 License: GPLv2
 Group: Applications/System
-Source0: http://nmap.org/dist/%{name}-%{version}%{betaver}.tar.bz2
+Source0: http://nmap.org/dist/%{name}-%{version}.tar.bz2
 Source1: zenmap.desktop
 Source2: zenmap-root.pamd
 Source3: zenmap-root.consoleapps
@@ -47,9 +46,9 @@ This package includes zenmap, a GTK+ frontend for nmap. The nmap package must
 be installed before installing nmap-frontend.
 
 %prep
-%setup -q -n %{name}-%{version}%{betaver}
+%setup -q
 %patch1 -p1 -b .mktemp
-#%patch2 -p1 -b .noms
+%patch2 -p1 -b .noms
 %patch3 -p1 -b .nostrip
 
 rm -rf liblua libpcap libpcre
@@ -125,6 +124,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Fri Jul 17 2009 Michal Hlavinka <mhlavink@redhat.com> - 2:5.0-1
+- updated to 5.0
+
 * Wed Jul 15 2009 Michal Hlavinka <mhlavink@redhat.com> - 2:4.90-0.RC1
 - updated to 4.90RC1
 
