@@ -1,7 +1,9 @@
+%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 5.00
-Release: 3%{?dist}
+Release: 4%{?dist}
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999)
 License: GPLv2
 Group: Applications/System
@@ -23,10 +25,9 @@ URL: http://nmap.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Epoch: 2
 BuildRequires: openssl-devel, gtk2-devel, lua-devel, libpcap-devel, pcre-devel
-BuildRequires: desktop-file-utils
+BuildRequires: desktop-file-utils, dos2unix
 
 %define pixmap_srcdir zenmap/share/pixmaps
-%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 %description
 Nmap is a utility for network exploration or security auditing.  It supports
@@ -37,13 +38,13 @@ and port specification, decoy scanning, determination of TCP sequence
 predictability characteristics, reverse-identd scanning, and more.
 
 %package frontend
-Summary: the GTK+ frontend for nmap
+Summary: The GTK+ front end for nmap
 Group: Applications/System
 Requires: nmap = %{epoch}:%{version} gtk2 python >= 2.5 pygtk2 python-sqlite2 usermode
-BuildRequires: python >= 2.5 pygtk2-devel libpng-devel
+BuildRequires: python >= 2.5 python-devel pygtk2-devel libpng-devel
 %description frontend
-This package includes zenmap, a GTK+ frontend for nmap. The nmap package must
-be installed before installing nmap-frontend.
+This package includes zenmap, a GTK+ front end for nmap. The nmap package must
+be installed before installing nmap front end.
 
 %prep
 %setup -q
@@ -52,6 +53,13 @@ be installed before installing nmap-frontend.
 %patch3 -p1 -b .nostrip
 
 rm -rf liblua libpcap libpcre
+
+#fix locale dir
+mv zenmap/share/zenmap/locale zenmap/share
+sed -i -e "s|^locale_dir =.*$|locale_dir = os.path.join('share','locale')|" \
+ -e 's|join(self.install_data, data_dir)|join(self.install_data, "share")|' zenmap/setup.py
+sed -i 's|^LOCALE_DIR = .*|LOCALE_DIR = join(prefix, "share", "locale")|' zenmap/zenmapCore/Paths.py
+
 
 %build
 export CFLAGS="$RPM_OPT_FLAGS"
@@ -68,7 +76,7 @@ rm -f $RPM_BUILD_ROOT%{_bindir}/uninstall_zenmap
 #use consolehelper
 rm -f $RPM_BUILD_ROOT%{_datadir}/applications/zenmap*.desktop
 rm -f $RPM_BUILD_ROOT%{_datadir}/zenmap/su-to-zenmap.sh
-ln -s /usr/bin/consolehelper $RPM_BUILD_ROOT%{_bindir}/zenmap-root
+ln -s consolehelper $RPM_BUILD_ROOT%{_bindir}/zenmap-root
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pam.d \
 	$RPM_BUILD_ROOT%{_sysconfdir}/security/console.apps
 install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/zenmap-root
@@ -88,7 +96,19 @@ desktop-file-install --vendor nmap \
 
 #for .desktop and app icon
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps
-ln -s %{_datadir}/zenmap/pixmaps/zenmap.png $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps
+ln -s ../../../../zenmap/pixmaps/zenmap.png $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps
+
+# fix end-of-line
+pushd $RPM_BUILD_ROOT
+for fe in ./%{python_sitelib}/zenmapCore/Paths.py
+do
+  dos2unix <$fe >$fe.new
+  touch -r $fe $fe.new
+  mv -f $fe.new $fe
+done
+popd
+
+%find_lang zenmap
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -107,10 +127,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/nmap
 %{_datadir}/ncat
 
-%files frontend
+%files frontend -f zenmap.lang
 %defattr(-,root,root)
-%config %{_sysconfdir}/pam.d/zenmap-root
-%config %{_sysconfdir}/security/console.apps/zenmap-root
+%config(noreplace) %{_sysconfdir}/pam.d/zenmap-root
+%config(noreplace) %{_sysconfdir}/security/console.apps/zenmap-root
 %{_bindir}/zenmap-root
 %{_bindir}/zenmap
 %{_bindir}/nmapfe
@@ -124,6 +144,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon Nov 02 2009 Michal Hlavinka <mhlavink@redhat.com> - 2:5.00-4
+- spec cleanup
+
 * Fri Aug 21 2009 Tomas Mraz <tmraz@redhat.com> - 2:5.00-3
 - rebuilt with new openssl
 
