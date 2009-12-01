@@ -1,11 +1,16 @@
+#TODO: stop using local copy of libdnet, once system distributed version supports sctp (grep sctp /usr/include/dnet.h)
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 5.00
-Release: 4%{?dist}
-# libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999)
-License: GPLv2
+Release: 5%{?dist}
+# nmap is GPLv2
+# zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
+# libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
+# openssl is OpenSSL
+# openssl and libdnet-striped is removed in %%prep section
+License: GPLv2 and LGPLv2+ and GPLv2+ and BSD
 Group: Applications/System
 Source0: http://nmap.org/dist/%{name}-%{version}.tar.bz2
 Source1: zenmap.desktop
@@ -52,7 +57,8 @@ be installed before installing nmap front end.
 %patch2 -p1 -b .noms
 %patch3 -p1 -b .nostrip
 
-rm -rf liblua libpcap libpcre
+#be sure we're not using tarballed copies of some libraries
+rm -rf liblua libpcap libpcre macosx mswin32
 
 #fix locale dir
 mv zenmap/share/zenmap/locale zenmap/share
@@ -144,6 +150,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon Dec 01 2009 Michal Hlavinka <mhlavink@redhat.com> - 2:5.00-5
+- spec cleanup
+
 * Mon Nov 02 2009 Michal Hlavinka <mhlavink@redhat.com> - 2:5.00-4
 - spec cleanup
 
