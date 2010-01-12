@@ -4,7 +4,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 5.00
-Release: 5%{?dist}
+Release: 6%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -45,7 +45,7 @@ predictability characteristics, reverse-identd scanning, and more.
 %package frontend
 Summary: The GTK+ front end for nmap
 Group: Applications/System
-Requires: nmap = %{epoch}:%{version} gtk2 python >= 2.5 pygtk2 python-sqlite2 usermode
+Requires: nmap = %{epoch}:%{version} gtk2 python >= 2.5 pygtk2 usermode
 BuildRequires: python >= 2.5 python-devel pygtk2-devel libpng-devel
 %description frontend
 This package includes zenmap, a GTK+ front end for nmap. The nmap package must
@@ -150,6 +150,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Tue Jan 12 2010 Michal Hlavinka <mhlavink@redhat.com> - 2:5.00-6
+- use sqlite3 (instead of sqlite2)
+
 * Mon Dec 01 2009 Michal Hlavinka <mhlavink@redhat.com> - 2:5.00-5
 - spec cleanup
 
