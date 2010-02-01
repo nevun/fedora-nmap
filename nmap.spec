@@ -3,8 +3,8 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 5.00
-Release: 6%{?dist}
+Version: 5.21
+Release: 1%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -129,6 +129,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/ndiff
 %{_mandir}/man1/ndiff.1.gz
 %{_mandir}/man1/nmap.1.gz
+%{_mandir}/*/man1/nmap.1.gz
 %{_mandir}/man1/ncat.1.gz
 %{_datadir}/nmap
 %{_datadir}/ncat
@@ -150,6 +151,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon Feb 01 2010 Michal Hlavinka <mhlavink@redhat.com> - 2:5.21-1
+- updated to 5.21
+
 * Tue Jan 12 2010 Michal Hlavinka <mhlavink@redhat.com> - 2:5.00-6
 - use sqlite3 (instead of sqlite2)
 
