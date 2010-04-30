@@ -4,7 +4,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 5.21
-Release: 1%{?dist}
+Release: 2%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -114,12 +114,13 @@ do
 done
 popd
 
+%find_lang nmap --with-man
 %find_lang zenmap
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files
+%files -f nmap.lang
 %defattr(-,root,root)
 %doc COPYING*
 %doc docs/README
@@ -129,7 +130,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/ndiff
 %{_mandir}/man1/ndiff.1.gz
 %{_mandir}/man1/nmap.1.gz
-%{_mandir}/*/man1/nmap.1.gz
 %{_mandir}/man1/ncat.1.gz
 %{_datadir}/nmap
 %{_datadir}/ncat
@@ -151,6 +151,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Fri Apr 30 2010 Ville Skyttä <ville.skytta@iki.fi> - 2:5.21-2
+- Mark localized man pages with %%lang.
+
 * Mon Feb 01 2010 Michal Hlavinka <mhlavink@redhat.com> - 2:5.21-1
 - updated to 5.21
 
