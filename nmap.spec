@@ -2,7 +2,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 5.21
-Release: 2%{?dist}
+Release: 3%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -155,7 +155,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
-* Fri Jun 18 2010 Michal Hlavinka <mhlavink@redhat.com> - 2:5.21-2
+* Fri Jun 18 2010 Michal Hlavinka <mhlavink@redhat.com> - 2:5.21-3
 - fix multilib issue
 
 * Fri Apr 30 2010 Ville Skyttä <ville.skytta@iki.fi> - 2:5.21-2
