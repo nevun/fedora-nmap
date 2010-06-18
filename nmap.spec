@@ -1,6 +1,4 @@
 #TODO: stop using local copy of libdnet, once system distributed version supports sctp (grep sctp /usr/include/dnet.h)
-%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 5.21
@@ -60,6 +58,9 @@ be installed before installing nmap front end.
 #be sure we're not using tarballed copies of some libraries
 rm -rf liblua libpcap libpcre macosx mswin32
 
+#fix multilib issue - step 1 - keep Paths.py time
+touch -r zenmap/zenmapCore/Paths.py Pathspytimeref
+
 #fix locale dir
 mv zenmap/share/zenmap/locale zenmap/share
 sed -i -e "s|^locale_dir =.*$|locale_dir = os.path.join('share','locale')|" \
@@ -87,6 +88,9 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pam.d \
 	$RPM_BUILD_ROOT%{_sysconfdir}/security/console.apps
 install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/zenmap-root
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/security/console.apps/zenmap-root
+
+#fix multilib issue - step 2 - restore Paths.py time
+touch -r Pathspytimeref $RPM_BUILD_ROOT%{python_sitelib}/zenmapCore/Paths.py
 
 cp docs/zenmap.1 $RPM_BUILD_ROOT%{_mandir}/man1/
 gzip $RPM_BUILD_ROOT%{_mandir}/man1/* || :
@@ -151,6 +155,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Fri Jun 18 2010 Michal Hlavinka <mhlavink@redhat.com> - 2:5.21-2
+- fix multilib issue
+
 * Fri Apr 30 2010 Ville Skyttä <ville.skytta@iki.fi> - 2:5.21-2
 - Mark localized man pages with %%lang.
 
