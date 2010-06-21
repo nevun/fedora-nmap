@@ -2,7 +2,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 5.21
-Release: 3%{?dist}
+Release: 4%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -45,6 +45,7 @@ Summary: The GTK+ front end for nmap
 Group: Applications/System
 Requires: nmap = %{epoch}:%{version} gtk2 python >= 2.5 pygtk2 usermode
 BuildRequires: python >= 2.5 python-devel pygtk2-devel libpng-devel
+BuildArch: noarch
 %description frontend
 This package includes zenmap, a GTK+ front end for nmap. The nmap package must
 be installed before installing nmap front end.
@@ -57,9 +58,6 @@ be installed before installing nmap front end.
 
 #be sure we're not using tarballed copies of some libraries
 rm -rf liblua libpcap libpcre macosx mswin32
-
-#fix multilib issue - step 1 - keep Paths.py time
-touch -r zenmap/zenmapCore/Paths.py Pathspytimeref
 
 #fix locale dir
 mv zenmap/share/zenmap/locale zenmap/share
@@ -88,9 +86,6 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pam.d \
 	$RPM_BUILD_ROOT%{_sysconfdir}/security/console.apps
 install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/zenmap-root
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/security/console.apps/zenmap-root
-
-#fix multilib issue - step 2 - restore Paths.py time
-touch -r Pathspytimeref $RPM_BUILD_ROOT%{python_sitelib}/zenmapCore/Paths.py
 
 cp docs/zenmap.1 $RPM_BUILD_ROOT%{_mandir}/man1/
 gzip $RPM_BUILD_ROOT%{_mandir}/man1/* || :
@@ -155,6 +150,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon Jun 21 2010 Michal Hlavinka <mhlavink@redhat.com> - 2:5.21-4
+- build -frontend as noarch
+
 * Fri Jun 18 2010 Michal Hlavinka <mhlavink@redhat.com> - 2:5.21-3
 - fix multilib issue
 
