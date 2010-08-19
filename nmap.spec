@@ -2,7 +2,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 5.21
-Release: 6%{?dist}
+Release: 7%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -116,16 +116,16 @@ popd
 %find_lang nmap --with-man
 %find_lang zenmap
 
-%post
+%post frontend
 touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
 
-%postun
+%postun frontend
 if [ $1 -eq 0 ] ; then
     touch --no-create %{_datadir}/icons/hicolor &>/dev/null
     gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 fi
 
-%posttrans
+%posttrans frontend
 gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 %clean
@@ -162,6 +162,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Aug 19 2010 Michal Hlavinka <mhlavink@redhat.com> - 2:5.21-7
+- update icon cache only after gui install
+
 * Wed Aug 11 2010 Michal Hlavinka <mhlavink@redhat.com> - 2:5.21-6
 - update icon cache after package install
 
