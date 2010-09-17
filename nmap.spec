@@ -2,7 +2,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 5.21
-Release: 7%{?dist}
+Release: 8%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -65,6 +65,9 @@ sed -i -e "s|^locale_dir =.*$|locale_dir = os.path.join('share','locale')|" \
  -e 's|join(self.install_data, data_dir)|join(self.install_data, "share")|' zenmap/setup.py
 sed -i 's|^LOCALE_DIR = .*|LOCALE_DIR = join(prefix, "share", "locale")|' zenmap/zenmapCore/Paths.py
 
+#fix jp->ja locale
+sed -i '/ALL_LINGUAS =/s/jp/ja/' Makefile.in
+mv docs/man-xlate/nmap-jp.1 docs/man-xlate/nmap-ja.1
 
 %build
 export CFLAGS="$RPM_OPT_FLAGS"
@@ -162,6 +165,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Fri Sep 17 2010 Michal Hlavinka <mhlavink@redhat.com> - 2:5.21-8
+- fix location of ja man page (#632104)
+
 * Thu Aug 19 2010 Michal Hlavinka <mhlavink@redhat.com> - 2:5.21-7
 - update icon cache only after gui install
 
