@@ -2,7 +2,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 5.21
-Release: 8%{?dist}
+Release: 9%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -165,6 +165,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Wed Sep 29 2010 jkeating - 2:5.21-9
+- Rebuilt for gcc bug 634757
+
 * Fri Sep 17 2010 Michal Hlavinka <mhlavink@redhat.com> - 2:5.21-8
 - fix location of ja man page (#632104)
 
