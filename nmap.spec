@@ -2,7 +2,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 5.21
-Release: 9%{?dist}
+Release: 10%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -23,6 +23,9 @@ Patch2: nmap-4.52-noms.patch
 
 #don't strip debuginfo
 Patch3: nmap-4.68-nostrip.patch
+
+# rhbz#637403, workaround for rhbz#621887=gnome#623965
+Patch4: zenmap-621887-workaround.patch
 
 URL: http://nmap.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -55,6 +58,7 @@ be installed before installing nmap front end.
 %patch1 -p1 -b .mktemp
 %patch2 -p1 -b .noms
 %patch3 -p1 -b .nostrip
+%patch4 -p1 -b .bz637403
 
 #be sure we're not using tarballed copies of some libraries
 rm -rf liblua libpcap libpcre macosx mswin32
@@ -165,6 +169,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Tue Oct 05 2010 Michal Hlavinka <mhlavink@redhat.com> - 2:5.21-10
+- add workaround for zenmap crash (#637403)
+
 * Wed Sep 29 2010 jkeating - 2:5.21-9
 - Rebuilt for gcc bug 634757
 
