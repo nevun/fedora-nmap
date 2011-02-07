@@ -146,9 +146,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/nmap
 %{_bindir}/ncat
 %{_bindir}/ndiff
+%{_bindir}/nping
 %{_mandir}/man1/ndiff.1.gz
 %{_mandir}/man1/nmap.1.gz
 %{_mandir}/man1/ncat.1.gz
+%{_mandir}/man1/nping.1.gz
 %{_datadir}/nmap
 %{_datadir}/ncat
 
