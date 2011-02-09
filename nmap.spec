@@ -2,7 +2,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 5.50
-Release: 1%{?dist}
+Release: 2%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -171,6 +171,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2:5.50-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Mon Feb 07 2011 Michal Hlavinka <mhlavink@redhat.com> - 2:5.50-1
 - updated to 5.50
 
