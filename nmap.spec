@@ -41,7 +41,11 @@ ping scanning (determine which hosts are up), many port scanning techniques
 (determine what services the hosts are offering), and TCP/IP fingerprinting
 (remote host operating system identification). Nmap also offers flexible target
 and port specification, decoy scanning, determination of TCP sequence
-predictability characteristics, reverse-identd scanning, and more.
+predictability characteristics, reverse-identd scanning, and more. In addition
+to the classic command-line nmap executable, the Nmap suite includes a flexible
+data transfer, redirection, and debugging tool (netcat utility ncat), a utility
+for comparing scan results (ndiff), and a packet generation and response analysis
+tool (nping). 
 
 %package frontend
 Summary: The GTK+ front end for nmap
