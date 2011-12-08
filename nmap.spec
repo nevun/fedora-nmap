@@ -2,7 +2,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 5.51
-Release: 1%{?dist}
+Release: 2%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -89,6 +89,10 @@ rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
 rm -f $RPM_BUILD_ROOT%{_bindir}/uninstall_zenmap
 
+#do not include certificate bundle (#734389)
+rm -f $RPM_BUILD_ROOT%{_datadir}/ncat/ca-bundle.crt
+rmdir $RPM_BUILD_ROOT%{_datadir}/ncat
+
 #use consolehelper
 rm -f $RPM_BUILD_ROOT%{_datadir}/applications/zenmap*.desktop
 rm -f $RPM_BUILD_ROOT%{_datadir}/zenmap/su-to-zenmap.sh
@@ -156,7 +160,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/ncat.1.gz
 %{_mandir}/man1/nping.1.gz
 %{_datadir}/nmap
-%{_datadir}/ncat
 
 %files frontend -f zenmap.lang
 %defattr(-,root,root)
@@ -175,6 +178,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Dec 08 2011 Michal Hlavinka <mhlavink@redhat.com> - 2:5.51-2
+- do not use bundled certificates, use only system ones (#734389)
+
 * Mon Feb 14 2011 Michal Hlavinka <mhlavink@redhat.com> - 2:5.51-1
 - nmap updated to 5.51
 
