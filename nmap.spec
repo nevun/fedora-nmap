@@ -3,7 +3,7 @@ Summary: Network exploration tool and security scanner
 Name: nmap
 Version: 6.00
 #global prerelease TEST5
-Release: 1%{?dist}
+Release: 2%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -21,9 +21,6 @@ Patch1: nmap-4.03-mktemp.patch
 
 #don't suggest to scan microsoft
 Patch2: nmap-4.52-noms.patch
-
-#don't strip debuginfo
-Patch3: nmap-4.68-nostrip.patch
 
 # rhbz#637403, workaround for rhbz#621887=gnome#623965
 Patch4: zenmap-621887-workaround.patch
@@ -62,7 +59,6 @@ be installed before installing nmap front end.
 %setup -q -n %{name}-%{version}%{?prerelease}
 %patch1 -p1 -b .mktemp
 %patch2 -p1 -b .noms
-%patch3 -p1 -b .nostrip
 %patch4 -p1 -b .bz637403
 
 #be sure we're not using tarballed copies of some libraries
@@ -87,7 +83,8 @@ make %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 
-make DESTDIR=$RPM_BUILD_ROOT install
+#prevent stripping - replace strip command with 'true'
+make DESTDIR=$RPM_BUILD_ROOT STRIP=true install
 rm -f $RPM_BUILD_ROOT%{_bindir}/uninstall_zenmap
 
 #do not include certificate bundle (#734389)
@@ -179,6 +176,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Tue Jun 05 2012 Michal Hlavinka <mhlavink@redhat.com> - 2:6.00-2
+- prevent stripping binaries
+
 * Tue Jun 05 2012 Michal Hlavinka <mhlavink@redhat.com> - 2:6.00-1
 - updated to 6.00
 
