@@ -1,9 +1,9 @@
 #TODO: stop using local copy of libdnet, once system distributed version supports sctp (grep sctp /usr/include/dnet.h)
 Summary: Network exploration tool and security scanner
 Name: nmap
-Version: 6.00
+Version: 6.01
 #global prerelease TEST5
-Release: 2%{?dist}
+Release: 1%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -176,6 +176,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon Jun 18 2012 Michal Hlavinka <mhlavink@redhat.com> - 2:6.01-1
+- nmap updated to 6.01
+
 * Tue Jun 05 2012 Michal Hlavinka <mhlavink@redhat.com> - 2:6.00-2
 - prevent stripping binaries
 
