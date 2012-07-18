@@ -1,9 +1,10 @@
 #TODO: stop using local copy of libdnet, once system distributed version supports sctp (grep sctp /usr/include/dnet.h)
 Summary: Network exploration tool and security scanner
 Name: nmap
+Epoch: 2
 Version: 6.01
 #global prerelease TEST5
-Release: 1%{?dist}
+Release: 2%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -11,6 +12,7 @@ Release: 1%{?dist}
 # openssl and libdnet-striped is removed in %%prep section
 License: GPLv2 and LGPLv2+ and GPLv2+ and BSD
 Group: Applications/System
+Requires: %{name}-ncat = %{epoch}:%{version}-%{release}
 Source0: http://nmap.org/dist/%{name}-%{version}%{?prerelease}.tar.bz2
 Source1: zenmap.desktop
 Source2: zenmap-root.pamd
@@ -27,7 +29,6 @@ Patch4: zenmap-621887-workaround.patch
 
 URL: http://nmap.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Epoch: 2
 BuildRequires: openssl-devel, gtk2-devel, lua-devel, libpcap-devel, pcre-devel
 BuildRequires: desktop-file-utils, dos2unix
 
@@ -54,6 +55,21 @@ BuildArch: noarch
 %description frontend
 This package includes zenmap, a GTK+ front end for nmap. The nmap package must
 be installed before installing nmap front end.
+
+%package ncat
+Group:   Applications/System
+Summary: Nmap's Netcat replacement
+Obsoletes: nc < 1.109.20120711-2
+Provides: nc
+%description ncat
+Ncat is a feature packed networking utility which will read and
+write data across a network from the command line.  It uses both
+TCP and UDP for communication and is designed to be a reliable
+back-end tool to instantly provide network connectivity to other
+applications and users. Ncat will not only work with IPv4 and IPv6
+but provides the user with a virtually limitless number of potential
+uses.
+
 
 %prep
 %setup -q -n %{name}-%{version}%{?prerelease}
@@ -107,6 +123,10 @@ ln -s zenmap.1.gz nmapfe.1.gz
 ln -s zenmap.1.gz xnmap.1.gz
 popd
 
+#we provide 'nc' replacement
+ln -s ncat.1.gz $RPM_BUILD_ROOT%{_mandir}/man1/nc.1.gz
+ln -s ncat $RPM_BUILD_ROOT%{_bindir}/nc
+
 desktop-file-install --vendor nmap \
 	--dir $RPM_BUILD_ROOT%{_datadir}/applications \
 	--add-category X-Red-Hat-Base \
@@ -150,14 +170,20 @@ rm -rf $RPM_BUILD_ROOT
 %doc docs/README
 %doc docs/nmap.usage.txt
 %{_bindir}/nmap
-%{_bindir}/ncat
 %{_bindir}/ndiff
 %{_bindir}/nping
 %{_mandir}/man1/ndiff.1.gz
 %{_mandir}/man1/nmap.1.gz
-%{_mandir}/man1/ncat.1.gz
 %{_mandir}/man1/nping.1.gz
 %{_datadir}/nmap
+
+%files ncat 
+%defattr(-,root,root)
+%doc COPYING ncat/docs/AUTHORS ncat/docs/README ncat/docs/THANKS ncat/docs/examples
+%{_bindir}/nc
+%{_bindir}/ncat
+%{_mandir}/man1/nc.1.gz
+%{_mandir}/man1/ncat.1.gz
 
 %files frontend -f zenmap.lang
 %defattr(-,root,root)
@@ -176,6 +202,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Wed Jul 18 2012 Michal Hlavinka <mhlavink@redhat.com> - 2:6.01-2
+- provide ncat in extra package as replacement for nc
+
 * Mon Jun 18 2012 Michal Hlavinka <mhlavink@redhat.com> - 2:6.01-1
 - nmap updated to 6.01
 
