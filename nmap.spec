@@ -4,7 +4,7 @@ Name: nmap
 Epoch: 2
 Version: 6.01
 #global prerelease TEST5
-Release: 3%{?dist}
+Release: 4%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -17,6 +17,11 @@ Source0: http://nmap.org/dist/%{name}-%{version}%{?prerelease}.tar.bz2
 Source1: zenmap.desktop
 Source2: zenmap-root.pamd
 Source3: zenmap-root.consoleapps
+
+# TEMPORARY - obsoleting nc caused troubles for libvirt, because ncat does not support
+# unix sockets, use wrapper with socat failback when unix sockets are required
+Source4: nc
+Requires: socat
 
 #prevent possible race condition for shtool, rhbz#158996
 Patch1: nmap-4.03-mktemp.patch
@@ -125,7 +130,8 @@ popd
 
 #we provide 'nc' replacement
 ln -s ncat.1.gz $RPM_BUILD_ROOT%{_mandir}/man1/nc.1.gz
-ln -s ncat $RPM_BUILD_ROOT%{_bindir}/nc
+#ln -s ncat $RPM_BUILD_ROOT%{_bindir}/nc
+install -m 0755 %{SOURCE4} $RPM_BUILD_ROOT%{_bindir}/nc
 
 desktop-file-install --vendor nmap \
 	--dir $RPM_BUILD_ROOT%{_datadir}/applications \
@@ -202,6 +208,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Tue Jul 24 2012 Michal Hlavinka <mhlavink@redhat.com> - 2:6.01-4
+- add nc wrapper with socat as a fallback for unix sockets
+
 * Fri Jul 20 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2:6.01-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
