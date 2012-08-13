@@ -4,7 +4,7 @@ Name: nmap
 Epoch: 2
 Version: 6.01
 #global prerelease TEST5
-Release: 4%{?dist}
+Release: 5%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -31,6 +31,9 @@ Patch2: nmap-4.52-noms.patch
 
 # rhbz#637403, workaround for rhbz#621887=gnome#623965
 Patch4: zenmap-621887-workaround.patch
+
+# upstream provided patch for rhbz#845005, not yet in upstream repository
+Patch5: ncat_reg_stdin.diff
 
 URL: http://nmap.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -81,6 +84,7 @@ uses.
 %patch1 -p1 -b .mktemp
 %patch2 -p1 -b .noms
 %patch4 -p1 -b .bz637403
+%patch5 -p1 -b .ncat_reg_stdin
 
 #be sure we're not using tarballed copies of some libraries
 rm -rf liblua libpcap libpcre macosx mswin32
@@ -208,6 +212,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon Aug 13 2012 Michal Hlavinka <mhlavink@redhat.com> - 2:6.01-5
+- ncat did not work when file was used as input (#845005)
+
 * Tue Jul 24 2012 Michal Hlavinka <mhlavink@redhat.com> - 2:6.01-4
 - add nc wrapper with socat as a fallback for unix sockets
 
