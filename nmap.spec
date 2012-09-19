@@ -4,7 +4,7 @@ Name: nmap
 Epoch: 2
 Version: 6.01
 #global prerelease TEST5
-Release: 5%{?dist}
+Release: 6%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -34,6 +34,9 @@ Patch4: zenmap-621887-workaround.patch
 
 # upstream provided patch for rhbz#845005, not yet in upstream repository
 Patch5: ncat_reg_stdin.diff
+
+# shutdown socket on EOF, sent upstream
+Patch6: nmap-6.01-r29743.patch
 
 URL: http://nmap.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -85,6 +88,7 @@ uses.
 %patch2 -p1 -b .noms
 %patch4 -p1 -b .bz637403
 %patch5 -p1 -b .ncat_reg_stdin
+%patch6 -p1 -b .r29743
 
 #be sure we're not using tarballed copies of some libraries
 rm -rf liblua libpcap libpcre macosx mswin32
@@ -212,6 +216,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Wed Sep 19 2012 Michal Hlavinka <mhlavink@redhat.com> - 2:6.01-6
+- shutdown socket on EOF (#845075)
+
 * Mon Aug 13 2012 Michal Hlavinka <mhlavink@redhat.com> - 2:6.01-5
 - ncat did not work when file was used as input (#845005)
 
