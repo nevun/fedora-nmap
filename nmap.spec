@@ -4,7 +4,7 @@ Name: nmap
 Epoch: 2
 Version: 6.01
 #global prerelease TEST5
-Release: 7%{?dist}
+Release: 8%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -36,6 +36,8 @@ Patch5: ncat_reg_stdin.diff
 
 # shutdown socket on EOF, sent upstream
 Patch6: nmap-6.01-r29743.patch
+Patch7: nmap-6.01-shutdown.patch
+Patch8: nmap-6.01-shutdown_test.patch
 
 URL: http://nmap.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -89,6 +91,8 @@ uses.
 %patch4 -p1 -b .bz637403
 %patch5 -p1 -b .ncat_reg_stdin
 %patch6 -p1 -b .r29743
+%patch7 -p1 -b .shutdown
+%patch8 -p1 -b .shutdown_test
 
 #be sure we're not using tarballed copies of some libraries
 rm -rf liblua libpcap libpcre macosx mswin32
@@ -216,6 +220,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Nov 29 2012 Michal Hlavinka <mhlavink@redhat.com> - 2:6.01-8
+- call shutdown also in listen mode
+
 * Tue Oct 02 2012 Petr Šabata <contyk@redhat.com> - 2:6.01-7
 - Move the socat dependency to the ncat subpackage (#858733)
 
