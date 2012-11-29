@@ -25,7 +25,7 @@ diff -up nmap-6.01/ncat/ncat_connect.c.ncat_reg_stdin nmap-6.01/ncat/ncat_connec
 +     * epoll(7) doesn't support regular files (e.g.: ncat < file.c)
 +     * If we detect that STDIN is a regular file, then we enforce
 +     * the use of the select-based engine. */
-+    if (stdin_is_reg())
++    //if (stdin_is_reg())
 +      nsock_set_default_engine("select");
 +#endif
 +
