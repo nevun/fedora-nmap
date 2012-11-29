@@ -4,7 +4,7 @@ Name: nmap
 Epoch: 2
 Version: 6.01
 #global prerelease TEST5
-Release: 8%{?dist}
+Release: 9%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -108,8 +108,8 @@ sed -i '/ALL_LINGUAS =/s/jp/ja/' Makefile.in
 mv docs/man-xlate/nmap-jp.1 docs/man-xlate/nmap-ja.1
 
 %build
-export CFLAGS="$RPM_OPT_FLAGS"
-export CXXFLAGS="$RPM_OPT_FLAGS"
+export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
+export CXXFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 %configure  --with-libpcap=/usr
 make %{?_smp_mflags}
 
@@ -220,6 +220,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Nov 29 2012 Michal Hlavinka <mhlavink@redhat.com> - 2:6.01-9
+- do not use strict aliasing
+
 * Thu Nov 29 2012 Michal Hlavinka <mhlavink@redhat.com> - 2:6.01-8
 - call shutdown also in listen mode
 
