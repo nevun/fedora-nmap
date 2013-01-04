@@ -1,34 +1,12 @@
-diff -up nmap-6.01/ncat/ncat_connect.c.ncat_reg_stdin nmap-6.01/ncat/ncat_connect.c
---- nmap-6.01/ncat/ncat_connect.c.ncat_reg_stdin	2012-03-01 07:53:35.000000000 +0100
-+++ nmap-6.01/ncat/ncat_connect.c	2012-08-08 18:34:36.971502138 +0200
-@@ -458,10 +458,30 @@ bail:
-     return -1;
- }
+diff -up nmap-6.01/ncat/ncat_main.c.noepoll nmap-6.01/ncat/ncat_main.c
+--- nmap-6.01/ncat/ncat_main.c.noepoll	2013-01-04 12:50:18.670295473 +0100
++++ nmap-6.01/ncat/ncat_main.c	2013-01-04 12:50:18.692295660 +0100
+@@ -280,6 +280,8 @@ int main(int argc, char *argv[])
+ #ifdef WIN32
+     windows_init();
+ #endif
++    
++    nsock_set_default_engine("select");
  
-+#if defined(LINUX)
-+static int stdin_is_reg(void) {
-+  struct stat buf;
-+
-+  if (fstat(STDIN_FILENO, &buf) < 0)
-+    fatal("fstat(): %s", strerror(errno));
-+
-+  return S_ISREG(buf.st_mode);
-+}
-+#endif
-+
- int ncat_connect(void) {
-     nsock_pool mypool;
-     int rc;
- 
-+#if defined(LINUX)
-+    /* -- Hack!!
-+     * epoll(7) doesn't support regular files (e.g.: ncat < file.c)
-+     * If we detect that STDIN is a regular file, then we enforce
-+     * the use of the select-based engine. */
-+    //if (stdin_is_reg())
-+      nsock_set_default_engine("select");
-+#endif
-+
-     /* Create an nsock pool */
-     if ((mypool = nsp_new(NULL)) == NULL)
-         bye("Failed to create nsock_pool.");
+     while (1) {
+         /* handle command line arguments */
