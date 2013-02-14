@@ -4,7 +4,7 @@ Name: nmap
 Epoch: 2
 Version: 6.01
 #global prerelease TEST5
-Release: 10%{?dist}
+Release: 11%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -220,6 +220,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2:6.01-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
 * Fri Jan 04 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.01-10
 - use select as default nsock engine
 
