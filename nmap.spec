@@ -2,9 +2,9 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Epoch: 2
-Version: 6.01
+Version: 6.25
 #global prerelease TEST5
-Release: 11%{?dist}
+Release: 1%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -34,15 +34,13 @@ Patch4: zenmap-621887-workaround.patch
 # upstream provided patch for rhbz#845005, not yet in upstream repository
 Patch5: ncat_reg_stdin.diff
 
-# shutdown socket on EOF, sent upstream
-Patch6: nmap-6.01-r29743.patch
-Patch7: nmap-6.01-shutdown.patch
-Patch8: nmap-6.01-shutdown_test.patch
-
 URL: http://nmap.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: openssl-devel, gtk2-devel, lua-devel, libpcap-devel, pcre-devel
 BuildRequires: desktop-file-utils, dos2unix
+
+# exception granted in FPC ticket 255
+Provides: bundled(lua) = 5.2
 
 %define pixmap_srcdir zenmap/share/pixmaps
 
@@ -90,12 +88,11 @@ uses.
 %patch2 -p1 -b .noms
 %patch4 -p1 -b .bz637403
 %patch5 -p1 -b .ncat_reg_stdin
-%patch6 -p1 -b .r29743
-%patch7 -p1 -b .shutdown
-%patch8 -p1 -b .shutdown_test
 
 #be sure we're not using tarballed copies of some libraries
-rm -rf liblua libpcap libpcre macosx mswin32
+#rm -rf liblua libpcap libpcre macosx mswin32
+rm -rf         libpcap libpcre macosx mswin32
+
 
 #fix locale dir
 mv zenmap/share/zenmap/locale zenmap/share
@@ -220,6 +217,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Fri Mar 08 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.25-1
+- nmap updated to 6.25
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2:6.01-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
