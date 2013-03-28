@@ -4,7 +4,7 @@ Name: nmap
 Epoch: 2
 Version: 6.25
 #global prerelease TEST5
-Release: 1%{?dist}
+Release: 2%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -38,6 +38,7 @@ URL: http://nmap.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: openssl-devel, gtk2-devel, lua-devel, libpcap-devel, pcre-devel
 BuildRequires: desktop-file-utils, dos2unix
+BuildRequires: libtool, automake, autoconf, gettext-devel
 
 # exception granted in FPC ticket 255
 Provides: bundled(lua) = 5.2
@@ -88,6 +89,14 @@ uses.
 %patch2 -p1 -b .noms
 %patch4 -p1 -b .bz637403
 %patch5 -p1 -b .ncat_reg_stdin
+
+# for aarch64 support, not needed with autotools 2.69+
+for f in acinclude.m4 configure.ac nping/configure.ac
+do
+  sed -i -e 's/\(AC_DEFINE([^,)]*\))/\1, 1, [Description])/' -e 's/\(AC_DEFINE([^,]*,[^,)]*\))/\1, [Description])/' $f
+done
+autoreconf -I . -fiv --no-recursive
+cd nping; autoreconf -I .. -fiv --no-recursive; cd ..
 
 #be sure we're not using tarballed copies of some libraries
 #rm -rf liblua libpcap libpcre macosx mswin32
@@ -217,6 +226,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Mar 28 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.25-2
+- fix aarch64 support (#926241)
+
 * Fri Mar 08 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.25-1
 - nmap updated to 6.25
 
