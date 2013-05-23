@@ -4,7 +4,7 @@ Name: nmap
 Epoch: 2
 Version: 6.25
 #global prerelease TEST5
-Release: 3%{?dist}
+Release: 4%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -159,8 +159,8 @@ desktop-file-install --vendor nmap \
 	%{SOURCE1};
 
 #for .desktop and app icon
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps
-ln -s ../../../../zenmap/pixmaps/zenmap.png $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/256x256/apps
+ln -s ../../../../zenmap/pixmaps/zenmap.png $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/256x256/apps
 
 # fix end-of-line
 pushd $RPM_BUILD_ROOT
@@ -228,6 +228,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu May 23 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.25-4
+- zenamp: fix icon symlink (#957381)
+
 * Thu May 23 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.25-3
 - zenmap: do not traceback when there si no display, just exit nicely (#958240)
 
