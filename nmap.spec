@@ -4,7 +4,7 @@ Name: nmap
 Epoch: 2
 Version: 6.25
 #global prerelease TEST5
-Release: 2%{?dist}
+Release: 3%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -33,6 +33,7 @@ Patch4: zenmap-621887-workaround.patch
 
 # upstream provided patch for rhbz#845005, not yet in upstream repository
 Patch5: ncat_reg_stdin.diff
+Patch6: nmap-6.25-displayerror.patch
 
 URL: http://nmap.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -89,6 +90,7 @@ uses.
 %patch2 -p1 -b .noms
 %patch4 -p1 -b .bz637403
 %patch5 -p1 -b .ncat_reg_stdin
+%patch6 -p1 -b .displayerror
 
 # for aarch64 support, not needed with autotools 2.69+
 for f in acinclude.m4 configure.ac nping/configure.ac
@@ -226,6 +228,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu May 23 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.25-3
+- zenmap: do not traceback when there si no display, just exit nicely (#958240)
+
 * Thu Mar 28 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.25-2
 - fix aarch64 support (#926241)
 
