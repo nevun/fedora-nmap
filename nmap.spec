@@ -4,7 +4,7 @@ Name: nmap
 Epoch: 2
 Version: 6.25
 #global prerelease TEST5
-Release: 4%{?dist}
+Release: 5%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -121,6 +121,9 @@ export CXXFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 %configure  --with-libpcap=/usr
 make %{?_smp_mflags}
 
+#fix man page (rhbz#813734)
+sed -i 's/-md/-mf/' nping/docs/nping.1
+
 %install
 rm -rf $RPM_BUILD_ROOT
 
@@ -228,6 +231,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Fri May 24 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.25-5
+- fix man page typo
+
 * Thu May 23 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.25-4
 - zenamp: fix icon symlink (#957381)
 
