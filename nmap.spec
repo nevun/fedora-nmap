@@ -4,7 +4,7 @@ Name: nmap
 Epoch: 2
 Version: 6.25
 #global prerelease TEST5
-Release: 5%{?dist}
+Release: 6.20130624svn%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -13,7 +13,7 @@ Release: 5%{?dist}
 License: GPLv2 and LGPLv2+ and GPLv2+ and BSD
 Group: Applications/System
 Requires: %{name}-ncat = %{epoch}:%{version}-%{release}
-Source0: http://nmap.org/dist/%{name}-%{version}%{?prerelease}.tar.bz2
+Source0: http://nmap.org/dist/%{name}-%{version}%{?prerelease}svn20130624.tar.bz2
 Source1: zenmap.desktop
 Source2: zenmap-root.pamd
 Source3: zenmap-root.consoleapps
@@ -231,6 +231,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon Jun 24 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.25-6.20130624svn
+- use svn snapshot that contains all necessary UDP patches
+
 * Fri May 24 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.25-5
 - fix man page typo
 
