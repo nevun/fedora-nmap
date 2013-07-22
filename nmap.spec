@@ -4,7 +4,7 @@ Name: nmap
 Epoch: 2
 Version: 6.25
 #global prerelease TEST5
-Release: 6.20130624svn%{?dist}
+Release: 7%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -40,9 +40,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: openssl-devel, gtk2-devel, lua-devel, libpcap-devel, pcre-devel
 BuildRequires: desktop-file-utils, dos2unix
 BuildRequires: libtool, automake, autoconf, gettext-devel
-
-# exception granted in FPC ticket 255
-Provides: bundled(lua) = 5.2
 
 %define pixmap_srcdir zenmap/share/pixmaps
 
@@ -101,9 +98,7 @@ autoreconf -I . -fiv --no-recursive
 cd nping; autoreconf -I .. -fiv --no-recursive; cd ..
 
 #be sure we're not using tarballed copies of some libraries
-#rm -rf liblua libpcap libpcre macosx mswin32
-rm -rf         libpcap libpcre macosx mswin32
-
+rm -rf liblua libpcap libpcre macosx mswin32
 
 #fix locale dir
 mv zenmap/share/zenmap/locale zenmap/share
@@ -231,6 +226,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon Jul 22 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.25-7
+- bundled lua no longer required
+
 * Mon Jun 24 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.25-6.20130624svn
 - use svn snapshot that contains all necessary UDP patches
 
