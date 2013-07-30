@@ -2,9 +2,9 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Epoch: 2
-Version: 6.25
+Version: 6.40
 #global prerelease TEST5
-Release: 7%{?dist}
+Release: 1%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -13,7 +13,7 @@ Release: 7%{?dist}
 License: GPLv2 and LGPLv2+ and GPLv2+ and BSD
 Group: Applications/System
 Requires: %{name}-ncat = %{epoch}:%{version}-%{release}
-Source0: http://nmap.org/dist/%{name}-%{version}%{?prerelease}svn20130624.tar.bz2
+Source0: http://nmap.org/dist/%{name}-%{version}%{?prerelease}.tar.bz2
 Source1: zenmap.desktop
 Source2: zenmap-root.pamd
 Source3: zenmap-root.consoleapps
@@ -105,10 +105,6 @@ mv zenmap/share/zenmap/locale zenmap/share
 sed -i -e "s|^locale_dir =.*$|locale_dir = os.path.join('share','locale')|" \
  -e 's|join(self.install_data, data_dir)|join(self.install_data, "share")|' zenmap/setup.py
 sed -i 's|^LOCALE_DIR = .*|LOCALE_DIR = join(prefix, "share", "locale")|' zenmap/zenmapCore/Paths.py
-
-#fix jp->ja locale
-sed -i '/ALL_LINGUAS =/s/jp/ja/' Makefile.in
-mv docs/man-xlate/nmap-jp.1 docs/man-xlate/nmap-ja.1
 
 %build
 export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
@@ -226,6 +222,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Tue Jul 30 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.40-1
+- nmap updated to 6.40
+
 * Mon Jul 22 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.25-7
 - bundled lua no longer required
 
@@ -343,7 +342,7 @@ rm -rf $RPM_BUILD_ROOT
 * Tue Jan 12 2010 Michal Hlavinka <mhlavink@redhat.com> - 2:5.00-6
 - use sqlite3 (instead of sqlite2)
 
-* Mon Dec 01 2009 Michal Hlavinka <mhlavink@redhat.com> - 2:5.00-5
+* Tue Dec 01 2009 Michal Hlavinka <mhlavink@redhat.com> - 2:5.00-5
 - spec cleanup
 
 * Mon Nov 02 2009 Michal Hlavinka <mhlavink@redhat.com> - 2:5.00-4
@@ -453,7 +452,7 @@ rm -rf $RPM_BUILD_ROOT
 * Fri Dec 09 2005 Jesse Keating <jkeating@redhat.com>
 - rebuilt
 
-* Tue Nov 11 2005 Harald Hoyer <harald@redhat.com> - 2:3.93-3
+* Fri Nov 11 2005 Harald Hoyer <harald@redhat.com> - 2:3.93-3
 - fixed wrong __attribute__ test
 
 * Thu Nov 10 2005 Tomas Mraz <tmraz@redhat.com> - 2:3.93-2
@@ -505,7 +504,7 @@ rm -rf $RPM_BUILD_ROOT
 * Tue Sep 23 2003 Florian La Roche <Florian.LaRoche@redhat.de>
 - allow disabling frontend if gtk1 is not available
 
-* Mon Jul 30 2003 Harald Hoyer <harald@redhat.de> 2:3.30-1
+* Wed Jul 30 2003 Harald Hoyer <harald@redhat.de> 2:3.30-1
 - version 3.30
 
 * Wed Jun 04 2003 Elliot Lee <sopwith@redhat.com>
