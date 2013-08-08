@@ -4,7 +4,7 @@ Name: nmap
 Epoch: 2
 Version: 6.40
 #global prerelease TEST5
-Release: 1%{?dist}
+Release: 2%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -34,6 +34,9 @@ Patch4: zenmap-621887-workaround.patch
 # upstream provided patch for rhbz#845005, not yet in upstream repository
 Patch5: ncat_reg_stdin.diff
 Patch6: nmap-6.25-displayerror.patch
+
+#rhbz#994376
+Patch7: nmap-6.40-logdebug.patch
 
 URL: http://nmap.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -88,6 +91,7 @@ uses.
 %patch4 -p1 -b .bz637403
 %patch5 -p1 -b .ncat_reg_stdin
 %patch6 -p1 -b .displayerror
+%patch7 -p1 -b .logdebug
 
 # for aarch64 support, not needed with autotools 2.69+
 for f in acinclude.m4 configure.ac nping/configure.ac
@@ -222,6 +226,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Aug 08 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.40-2
+- do not print debug messages during normal use (#994376)
+
 * Tue Jul 30 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.40-1
 - nmap updated to 6.40
 
