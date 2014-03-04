@@ -1,10 +1,13 @@
 #TODO: stop using local copy of libdnet, once system distributed version supports sctp (grep sctp /usr/include/dnet.h)
+
+%global _hardened_build 1
+
 Summary: Network exploration tool and security scanner
 Name: nmap
 Epoch: 2
 Version: 6.40
 #global prerelease TEST5
-Release: 3%{?dist}
+Release: 4%{?dist}
 # nmap is GPLv2
 # zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
 # libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
@@ -220,6 +223,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Tue Mar 04 2014 Michal Hlavinka <mhlavink@redhat.com> - 2:6.40-4
+- use _hardened_build
+
 * Thu Oct 17 2013 Michal Hlavinka <mhlavink@redhat.com> - 2:6.40-3
 - ncat should support UNIX sockets correctly, drop wrapper with socat
 
