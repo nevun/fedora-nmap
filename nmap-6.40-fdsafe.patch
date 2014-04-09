@@ -1,0 +1,202 @@
+diff -up nmap-6.40/nbase/nbase.h.fdsafe nmap-6.40/nbase/nbase.h
+--- nmap-6.40/nbase/nbase.h.fdsafe	2013-07-29 00:08:48.000000000 +0200
++++ nmap-6.40/nbase/nbase.h	2014-04-09 17:30:19.579033118 +0200
+@@ -369,37 +369,41 @@ extern "C" int vsnprintf (char *, size_t
+ #endif
+ 
+ 
+-#ifdef WIN32
+-#define CHECKED_FD_SET FD_SET
+-#else
+-#define CHECKED_FD_SET(fd, set) \
+-  do { \
+-    if ((fd) < FD_SETSIZE) { \
+-      FD_SET((fd), (set)); \
+-    } else { \
+-      fprintf(stderr, "%s:%ld: Attempt to FD_SET fd %d, which is not less than" \
+-        " FD_SETSIZE (%d). Try using a lower parallelism.", \
+-        __FILE__, (long int) __LINE__, (fd), FD_SETSIZE); \
+-      abort(); \
+-    } \
+-  } while (0)
++static inline int checked_fd_isset(int fd, const fd_set *fds) {
++#ifndef WIN32
++  if (fd >= FD_SETSIZE) {
++    fprintf(stderr, "Attempt to FD_ISSET fd %d, which is not less than "
++                    "FD_SETSIZE (%d). Try using a lower parallelism.",
++                    fd, FD_SETSIZE);
++    abort();
++  }
+ #endif
++  return FD_ISSET(fd, fds);
++}
+ 
+-#ifdef WIN32
+-#define CHECKED_FD_CLR FD_CLR
+-#else
+-#define CHECKED_FD_CLR(fd, set) \
+-  do { \
+-    if ((fd) < FD_SETSIZE) { \
+-      FD_CLR((fd), (set)); \
+-    } else { \
+-      fprintf(stderr, "%s:%ld: Attempt to FD_CLR fd %d, which is not less than" \
+-        " FD_SETSIZE (%d). Try using a lower parallelism.", \
+-        __FILE__, (long int) __LINE__, (fd), FD_SETSIZE); \
+-      abort(); \
+-    } \
+-  } while (0)
++static inline void checked_fd_clr(int fd, fd_set *fds) {
++#ifndef WIN32
++  if (fd >= FD_SETSIZE) {
++    fprintf(stderr, "Attempt to FD_CLR fd %d, which is not less than "
++                    "FD_SETSIZE (%d). Try using a lower parallelism.",
++                    fd, FD_SETSIZE);
++    abort();
++  }
+ #endif
++  FD_CLR(fd, fds);
++}
++
++static inline void checked_fd_set(int fd, fd_set *fds) {
++#ifndef WIN32
++  if (fd >= FD_SETSIZE) {
++    fprintf(stderr, "Attempt to FD_SET fd %d, which is not less than "
++                    "FD_SETSIZE (%d). Try using a lower parallelism.",
++                    fd, FD_SETSIZE);
++    abort();
++  }
++#endif
++  FD_SET(fd, fds);
++}
+ 
+ 
+ #ifdef __cplusplus
+diff -up nmap-6.40/nsock/src/engine_select.c.fdsafe nmap-6.40/nsock/src/engine_select.c
+--- nmap-6.40/nsock/src/engine_select.c.fdsafe	2013-07-29 00:08:48.000000000 +0200
++++ nmap-6.40/nsock/src/engine_select.c	2014-04-09 17:30:19.579033118 +0200
+@@ -174,18 +174,18 @@ int select_iod_unregister(mspool *nsp, m
+     if (iod->pcap) {
+       int sd = ((mspcap *)iod->pcap)->pcap_desc;
+       if (sd >= 0) {
+-        CHECKED_FD_CLR(sd, &sinfo->fds_master_r);
+-        CHECKED_FD_CLR(sd, &sinfo->fds_results_r);
++        checked_fd_clr(sd, &sinfo->fds_master_r);
++        checked_fd_clr(sd, &sinfo->fds_results_r);
+       }
+     } else
+ #endif
+     {
+-      CHECKED_FD_CLR(iod->sd, &sinfo->fds_master_r);
+-      CHECKED_FD_CLR(iod->sd, &sinfo->fds_master_w);
+-      CHECKED_FD_CLR(iod->sd, &sinfo->fds_master_x);
+-      CHECKED_FD_CLR(iod->sd, &sinfo->fds_results_r);
+-      CHECKED_FD_CLR(iod->sd, &sinfo->fds_results_w);
+-      CHECKED_FD_CLR(iod->sd, &sinfo->fds_results_x);
++      checked_fd_clr(iod->sd, &sinfo->fds_master_r);
++      checked_fd_clr(iod->sd, &sinfo->fds_master_w);
++      checked_fd_clr(iod->sd, &sinfo->fds_master_x);
++      checked_fd_clr(iod->sd, &sinfo->fds_results_r);
++      checked_fd_clr(iod->sd, &sinfo->fds_results_w);
++      checked_fd_clr(iod->sd, &sinfo->fds_results_x);
+     }
+ 
+     if (sinfo->max_sd == iod->sd)
+@@ -209,23 +209,23 @@ int select_iod_modify(mspool *nsp, msiod
+ 
+   /* -- set events -- */
+   if (ev_set & EV_READ)
+-    CHECKED_FD_SET(sd, &sinfo->fds_master_r);
++    checked_fd_set(sd, &sinfo->fds_master_r);
+ 
+   if (ev_set & EV_WRITE)
+-    CHECKED_FD_SET(sd, &sinfo->fds_master_w);
++    checked_fd_set(sd, &sinfo->fds_master_w);
+ 
+   if (ev_set & EV_EXCEPT)
+-    CHECKED_FD_SET(sd, &sinfo->fds_master_x);
++    checked_fd_set(sd, &sinfo->fds_master_x);
+ 
+   /* -- clear events -- */
+   if (ev_clr & EV_READ)
+-    CHECKED_FD_CLR(sd, &sinfo->fds_master_r);
++    checked_fd_clr(sd, &sinfo->fds_master_r);
+ 
+   if (ev_clr & EV_WRITE)
+-    CHECKED_FD_CLR(sd, &sinfo->fds_master_w);
++    checked_fd_clr(sd, &sinfo->fds_master_w);
+ 
+   if (ev_clr & EV_EXCEPT)
+-    CHECKED_FD_CLR(sd, &sinfo->fds_master_x);
++    checked_fd_clr(sd, &sinfo->fds_master_x);
+ 
+ 
+   /* -- update max_sd -- */
+@@ -335,7 +335,7 @@ static inline int get_evmask(const mspoo
+ #if HAVE_PCAP
+ #ifndef PCAP_CAN_DO_SELECT
+   if (nsi->pcap) {
+-    /* Always assume readable for a non-blocking read. We can't check FD_ISSET
++    /* Always assume readable for a non-blocking read. We can't check checked_fd_isset
+        because we don't have a pcap_desc. */
+     evmask |= EV_READ;
+     return evmask;
+@@ -352,11 +352,11 @@ static inline int get_evmask(const mspoo
+ 
+   assert(sd >= 0);
+ 
+-  if (FD_ISSET(sd, &sinfo->fds_results_r))
++  if (checked_fd_isset(sd, &sinfo->fds_results_r))
+     evmask |= EV_READ;
+-  if (FD_ISSET(sd, &sinfo->fds_results_w))
++  if (checked_fd_isset(sd, &sinfo->fds_results_w))
+     evmask |= EV_WRITE;
+-  if (FD_ISSET(sd, &sinfo->fds_results_x))
++  if (checked_fd_isset(sd, &sinfo->fds_results_x))
+     evmask |= EV_EXCEPT;
+ 
+   return evmask;
+diff -up nmap-6.40/scan_engine.cc.fdsafe nmap-6.40/scan_engine.cc
+--- nmap-6.40/scan_engine.cc.fdsafe	2013-07-29 00:08:48.000000000 +0200
++++ nmap-6.40/scan_engine.cc	2014-04-09 17:30:19.580033127 +0200
+@@ -1006,10 +1006,10 @@ ConnectScanInfo::~ConnectScanInfo() {}
+    watch an SD that was already being watched. */
+ bool ConnectScanInfo::watchSD(int sd) {
+   assert(sd >= 0);
+-  if (!FD_ISSET(sd, &fds_read)) {
+-    CHECKED_FD_SET(sd, &fds_read);
+-    CHECKED_FD_SET(sd, &fds_write);
+-    CHECKED_FD_SET(sd, &fds_except);
++  if (!checked_fd_isset(sd, &fds_read)) {
++    checked_fd_set(sd, &fds_read);
++    checked_fd_set(sd, &fds_write);
++    checked_fd_set(sd, &fds_except);
+     numSDs++;
+     if (sd > maxValidSD)
+       maxValidSD = sd;
+@@ -1024,10 +1024,10 @@ bool ConnectScanInfo::watchSD(int sd) {
+    there in the first place. */
+ bool ConnectScanInfo::clearSD(int sd) {
+   assert(sd >= 0);
+-  if (FD_ISSET(sd, &fds_read)) {
+-    CHECKED_FD_CLR(sd, &fds_read);
+-    CHECKED_FD_CLR(sd, &fds_write);
+-    CHECKED_FD_CLR(sd, &fds_except);
++  if (checked_fd_isset(sd, &fds_read)) {
++    checked_fd_clr(sd, &fds_read);
++    checked_fd_clr(sd, &fds_write);
++    checked_fd_clr(sd, &fds_except);
+     assert(numSDs > 0);
+     numSDs--;
+     if (sd == maxValidSD)
+@@ -4096,8 +4096,9 @@ static bool do_one_select_round(UltraSca
+       assert(probe->type == UltraProbe::UP_CONNECT);
+       sd = probe->CP()->sd;
+       /* Let see if anything has happened! */
+-      if (sd >= 0 && (FD_ISSET(sd, &fds_rtmp)  || FD_ISSET(sd, &fds_wtmp) ||
+-                      FD_ISSET(sd, &fds_xtmp))) {
++      if (sd >= 0 && (checked_fd_isset(sd, &fds_rtmp) ||
++                      checked_fd_isset(sd, &fds_wtmp) ||
++                      checked_fd_isset(sd, &fds_xtmp))) {
+         numGoodSD++;
+         newportstate = PORT_UNKNOWN;
+         if (getsockopt(sd, SOL_SOCKET, SO_ERROR, (char *) &optval,
