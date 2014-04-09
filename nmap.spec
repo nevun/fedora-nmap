@@ -7,13 +7,10 @@ Name: nmap
 Epoch: 2
 Version: 6.40
 #global prerelease TEST5
-Release: 4%{?dist}
-# nmap is GPLv2
-# zenmap is GPLv2 and LGPLv2+ (zenmap/higwidgets) and GPLv2+ (zenmap/radialnet)
-# libdnet-stripped is BSD (advertising clause rescinded by the Univ. of California in 1999) with some parts as Public Domain (crc32)
-# openssl is OpenSSL
-# openssl and libdnet-striped is removed in %%prep section
-License: GPLv2 and LGPLv2+ and GPLv2+ and BSD
+Release: 5%{?dist}
+# Uses combination of licenses based on GPL license, but with extra modification
+# so it got its own license tag rhbz#1055861
+License: Nmap
 Group: Applications/System
 Requires: %{name}-ncat = %{epoch}:%{version}-%{release}
 Source0: http://nmap.org/dist/%{name}-%{version}%{?prerelease}.tar.bz2
@@ -223,6 +220,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Wed Apr 09 2014 Michal Hlavinka <mhlavink@redhat.com> - 2:6.40-5
+- update license tag (#1055861)
+
 * Tue Mar 04 2014 Michal Hlavinka <mhlavink@redhat.com> - 2:6.40-4
 - use _hardened_build
 
