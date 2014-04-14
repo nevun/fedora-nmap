@@ -5,9 +5,9 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Epoch: 2
-Version: 6.40
+Version: 6.45
 #global prerelease TEST5
-Release: 6%{?dist}
+Release: 1%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -24,16 +24,12 @@ Patch1: nmap-4.03-mktemp.patch
 #don't suggest to scan microsoft
 Patch2: nmap-4.52-noms.patch
 
-# rhbz#637403, workaround for rhbz#621887=gnome#623965
-Patch4: zenmap-621887-workaround.patch
-
 # upstream provided patch for rhbz#845005, not yet in upstream repository
 Patch5: ncat_reg_stdin.diff
 Patch6: nmap-6.25-displayerror.patch
 
 #rhbz#994376
 Patch7: nmap-6.40-logdebug.patch
-Patch8: nmap-6.40-fdsafe.patch
 
 URL: http://nmap.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -84,11 +80,9 @@ uses.
 %setup -q -n %{name}-%{version}%{?prerelease}
 %patch1 -p1 -b .mktemp
 %patch2 -p1 -b .noms
-%patch4 -p1 -b .bz637403
 %patch5 -p1 -b .ncat_reg_stdin
 %patch6 -p1 -b .displayerror
 %patch7 -p1 -b .logdebug
-%patch8 -p1 -b .fdsafe
 
 # for aarch64 support, not needed with autotools 2.69+
 for f in acinclude.m4 configure.ac nping/configure.ac
@@ -222,6 +216,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon Apr 14 2014 Michal Hlavinka <mhlavink@redhat.com> - 2:6.45-1
+- nmap updated to 6.45
+
 * Wed Apr 09 2014 Michal Hlavinka <mhlavink@redhat.com> - 2:6.40-6
 - fix unexpected crash when too much paralelism is used (#1057912)
 
