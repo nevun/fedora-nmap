@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 2
 Version: 6.47
 #global prerelease TEST5
-Release: 1%{?dist}
+Release: 2%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -209,13 +209,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/xnmap
 %{python_sitelib}/*
 %{_datadir}/applications/nmap-zenmap.desktop
-%{_datadir}/icons/hicolor/*
-%{_datadir}/zenmap
+%{_datadir}/icons/hicolor/256x256/apps/*
+%{_datadir}/zenmapx
 %{_mandir}/man1/zenmap.1.gz
 %{_mandir}/man1/nmapfe.1.gz
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Wed Dec 10 2014 Michal Hlavinka <mhlavink@redhat.com> - 2:6.47-2
+- do not own icons/hicolor/<size>/apps directory (#1171813)
+
 * Mon Aug 25 2014 Michal Hlavinka <mhlavink@redhat.com> - 2:6.47-1
 - nmap updated to 6.47
 
