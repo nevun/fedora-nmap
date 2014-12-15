@@ -210,7 +210,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/*
 %{_datadir}/applications/nmap-zenmap.desktop
 %{_datadir}/icons/hicolor/256x256/apps/*
-%{_datadir}/zenmapx
+%{_datadir}/zenmap
 %{_mandir}/man1/zenmap.1.gz
 %{_mandir}/man1/nmapfe.1.gz
 %{_mandir}/man1/xnmap.1.gz
