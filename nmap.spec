@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 2
 Version: 6.47
 #global prerelease TEST5
-Release: 2%{?dist}
+Release: 3%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -216,6 +216,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2:6.47-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Wed Dec 10 2014 Michal Hlavinka <mhlavink@redhat.com> - 2:6.47-2
 - do not own icons/hicolor/<size>/apps directory (#1171813)
 
