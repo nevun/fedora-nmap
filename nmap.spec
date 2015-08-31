@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 2
 Version: 6.47
 #global prerelease TEST5
-Release: 3%{?dist}
+Release: 4%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -30,6 +30,8 @@ Patch6: nmap-6.25-displayerror.patch
 
 #rhbz#994376
 Patch7: nmap-6.40-logdebug.patch
+#sent upstream, rhbz#978964
+Patch8: nmap-6.40-allresolve.patch
 
 URL: http://nmap.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -83,6 +85,7 @@ uses.
 %patch5 -p1 -b .ncat_reg_stdin
 %patch6 -p1 -b .displayerror
 %patch7 -p1 -b .logdebug
+%patch8 -p1 -b .allresolve
 
 # for aarch64 support, not needed with autotools 2.69+
 for f in acinclude.m4 configure.ac nping/configure.ac
@@ -216,6 +219,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon Aug 31 2015 Michal Hlavinka <mhlavink@redhat.com> - 2:6.47-4
+- ncat should try to connect to all resolved addresses, not only the first one (#978964)
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2:6.47-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
