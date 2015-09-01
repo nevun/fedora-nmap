@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 2
 Version: 6.47
 #global prerelease TEST5
-Release: 4%{?dist}
+Release: 5%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -96,7 +96,8 @@ autoreconf -I . -fiv --no-recursive
 cd nping; autoreconf -I .. -fiv --no-recursive; cd ..
 
 #be sure we're not using tarballed copies of some libraries
-rm -rf liblua libpcap libpcre macosx mswin32
+#rm -rf liblua libpcap libpcre macosx mswin32 ###TODO###
+rm -rf libpcap libpcre macosx mswin32
 
 #fix locale dir
 mv zenmap/share/zenmap/locale zenmap/share
@@ -107,7 +108,8 @@ sed -i 's|^LOCALE_DIR = .*|LOCALE_DIR = join(prefix, "share", "locale")|' zenmap
 %build
 export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 export CXXFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
-%configure  --with-libpcap=/usr
+#%configure  --with-libpcap=/usr ###TODO###
+%configure  --with-libpcap=/usr --with-liblua=included
 make %{?_smp_mflags}
 
 #fix man page (rhbz#813734)
@@ -219,6 +221,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Tue Sep 01 2015 Michal Hlavinka <mhlavink@redhat.com> - 2:6.47-5
+- fix FTBFS
+
 * Mon Aug 31 2015 Michal Hlavinka <mhlavink@redhat.com> - 2:6.47-4
 - ncat should try to connect to all resolved addresses, not only the first one (#978964)
 
