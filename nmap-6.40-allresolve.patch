@@ -1,7 +1,7 @@
-diff -up nmap-6.47/ncat/ncat_connect.c.allresolve nmap-6.47/ncat/ncat_connect.c
---- nmap-6.47/ncat/ncat_connect.c.allresolve	2015-08-31 17:46:41.343244425 +0200
-+++ nmap-6.47/ncat/ncat_connect.c	2015-08-31 17:46:41.347244408 +0200
-@@ -165,6 +165,7 @@ static struct conn_state cs = {
+diff -up nmap-7.00/ncat/ncat_connect.c.allresolve nmap-7.00/ncat/ncat_connect.c
+--- nmap-7.00/ncat/ncat_connect.c.allresolve	2015-06-27 10:21:53.000000000 +0200
++++ nmap-7.00/ncat/ncat_connect.c	2015-11-20 14:38:20.693918558 +0100
+@@ -164,6 +164,7 @@ static struct conn_state cs = {
      0
  };
  
@@ -9,7 +9,7 @@ diff -up nmap-6.47/ncat/ncat_connect.c.allresolve nmap-6.47/ncat/ncat_connect.c
  static void connect_handler(nsock_pool nsp, nsock_event evt, void *data);
  static void post_connect(nsock_pool nsp, nsock_iod iod);
  static void read_stdin_handler(nsock_pool nsp, nsock_event evt, void *data);
-@@ -532,8 +533,8 @@ static int do_proxy_socks4(void)
+@@ -535,8 +536,8 @@ static int do_proxy_socks4(void)
      socket_buffer_init(&stateful_buf, sd);
  
      if (o.verbose) {
@@ -20,7 +20,7 @@ diff -up nmap-6.47/ncat/ncat_connect.c.allresolve nmap-6.47/ncat/ncat_connect.c
      }
  
      /* Fill the socks4_data struct */
-@@ -633,8 +634,8 @@ static int do_proxy_socks5(void)
+@@ -636,8 +637,8 @@ static int do_proxy_socks5(void)
      socket_buffer_init(&stateful_buf, sd);
  
      if (o.verbose) {
@@ -31,16 +31,16 @@ diff -up nmap-6.47/ncat/ncat_connect.c.allresolve nmap-6.47/ncat/ncat_connect.c
      }
  
      zmem(&socks5msg,sizeof(socks5msg));
-@@ -930,7 +931,7 @@ int ncat_connect(void)
+@@ -956,7 +957,7 @@ int ncat_connect(void)
  
              if (o.af != AF_INET)
                  bye("Sorry, -g can only currently be used with IPv4.");
 -            ipopts = buildsrcrte(targetss.in.sin_addr, o.srcrtes, o.numsrcrtes, o.srcrteptr, &ipoptslen);
 +            ipopts = buildsrcrte(targetaddrs->addr.in.sin_addr, o.srcrtes, o.numsrcrtes, o.srcrteptr, &ipoptslen);
  
-             nsi_set_ipoptions(cs.sock_nsi, ipopts, ipoptslen);
+             nsock_iod_set_ipoptions(cs.sock_nsi, ipopts, ipoptslen);
              free(ipopts); /* Nsock has its own copy */
-@@ -940,49 +941,18 @@ int ncat_connect(void)
+@@ -966,49 +967,18 @@ int ncat_connect(void)
          if (o.af == AF_UNIX) {
              if (o.proto == IPPROTO_UDP) {
                  nsock_connect_unixsock_datagram(mypool, cs.sock_nsi, connect_handler, NULL,
@@ -97,7 +97,7 @@ diff -up nmap-6.47/ncat/ncat_connect.c.allresolve nmap-6.47/ncat/ncat_connect.c
          }
      } else {
          /* A proxy connection. */
-@@ -1018,6 +988,8 @@ int ncat_connect(void)
+@@ -1044,6 +1014,8 @@ int ncat_connect(void)
      /* connect */
      rc = nsock_loop(mypool, -1);
  
@@ -106,7 +106,7 @@ diff -up nmap-6.47/ncat/ncat_connect.c.allresolve nmap-6.47/ncat/ncat_connect.c
      if (o.verbose) {
          struct timeval end_time;
          double time;
-@@ -1041,19 +1013,73 @@ int ncat_connect(void)
+@@ -1067,19 +1039,73 @@ int ncat_connect(void)
      return rc == NSOCK_LOOP_ERROR ? 1 : 0;
  }
  
@@ -170,7 +170,7 @@ diff -up nmap-6.47/ncat/ncat_connect.c.allresolve nmap-6.47/ncat/ncat_connect.c
 +            if (o.verbose) {
 +                union sockaddr_u peer;
 +                zmem(&peer, sizeof(peer.storage));
-+                nsi_getlastcommunicationinfo(cs.sock_nsi, NULL, NULL, NULL,
++                nsock_iod_get_communication_info(cs.sock_nsi, NULL, NULL, NULL,
 +                    &peer.sockaddr, sizeof(peer.storage));
 +                loguser("Connection to %s failed: %s.\n", inet_socktop(&peer), socket_strerror(errcode));
 +                loguser("Trying next address...\n");
@@ -186,10 +186,10 @@ diff -up nmap-6.47/ncat/ncat_connect.c.allresolve nmap-6.47/ncat/ncat_connect.c
      } else {
          ncat_assert(status == NSE_STATUS_SUCCESS);
      }
-diff -up nmap-6.47/ncat/ncat_core.c.allresolve nmap-6.47/ncat/ncat_core.c
---- nmap-6.47/ncat/ncat_core.c.allresolve	2014-08-16 04:45:47.000000000 +0200
-+++ nmap-6.47/ncat/ncat_core.c	2015-08-31 17:46:41.348244403 +0200
-@@ -147,8 +147,7 @@ int num_listenaddrs = 0;
+diff -up nmap-7.00/ncat/ncat_core.c.allresolve nmap-7.00/ncat/ncat_core.c
+--- nmap-7.00/ncat/ncat_core.c.allresolve	2015-11-15 15:08:02.000000000 +0100
++++ nmap-7.00/ncat/ncat_core.c	2015-11-20 14:15:51.763905046 +0100
+@@ -146,8 +146,7 @@ int num_listenaddrs = 0;
  union sockaddr_u srcaddr;
  size_t srcaddrlen;
  
@@ -199,7 +199,7 @@ diff -up nmap-6.47/ncat/ncat_core.c.allresolve nmap-6.47/ncat/ncat_core.c
  
  /* Global options structure. */
  struct options o;
-@@ -210,19 +209,23 @@ void options_init(void)
+@@ -211,19 +210,23 @@ void options_init(void)
  #endif
  }
  
@@ -228,7 +228,7 @@ diff -up nmap-6.47/ncat/ncat_core.c.allresolve nmap-6.47/ncat/ncat_core.c
  
      memset(&hints, 0, sizeof(hints));
      hints.ai_family = af;
-@@ -239,8 +242,19 @@ static int resolve_internal(const char *
+@@ -240,8 +243,19 @@ static int resolve_internal(const char *
      if (result == NULL)
          return EAI_NONAME;
      ncat_assert(result->ai_addrlen > 0 && result->ai_addrlen <= (int) sizeof(struct sockaddr_storage));
@@ -250,7 +250,7 @@ diff -up nmap-6.47/ncat/ncat_core.c.allresolve nmap-6.47/ncat/ncat_core.c
      freeaddrinfo(result);
  
      return 0;
-@@ -259,12 +273,42 @@ int resolve(const char *hostname, unsign
+@@ -260,12 +274,42 @@ int resolve(const char *hostname, unsign
      struct sockaddr_storage *ss, size_t *sslen, int af)
  {
      int flags;
@@ -294,10 +294,10 @@ diff -up nmap-6.47/ncat/ncat_core.c.allresolve nmap-6.47/ncat/ncat_core.c
  }
  
  int fdinfo_close(struct fdinfo *fdn)
-diff -up nmap-6.47/ncat/ncat_core.h.allresolve nmap-6.47/ncat/ncat_core.h
---- nmap-6.47/ncat/ncat_core.h.allresolve	2014-08-16 04:45:47.000000000 +0200
-+++ nmap-6.47/ncat/ncat_core.h	2015-08-31 17:46:41.348244403 +0200
-@@ -130,14 +130,20 @@
+diff -up nmap-7.00/ncat/ncat_core.h.allresolve nmap-7.00/ncat/ncat_core.h
+--- nmap-7.00/ncat/ncat_core.h.allresolve	2015-11-15 15:08:02.000000000 +0100
++++ nmap-7.00/ncat/ncat_core.h	2015-11-20 14:15:51.763905046 +0100
+@@ -132,14 +132,20 @@
     a IPV4 INADDR_ANY and a IPV6 in6addr_any at most or a user defined address */
  #define NUM_LISTEN_ADDRS 2
  
@@ -320,7 +320,7 @@ diff -up nmap-6.47/ncat/ncat_core.h.allresolve nmap-6.47/ncat/ncat_core.h
  
  enum exec_mode {
      EXEC_PLAIN,
-@@ -223,6 +229,14 @@ void options_init(void);
+@@ -227,6 +233,14 @@ void options_init(void);
  int resolve(const char *hostname, unsigned short port,
              struct sockaddr_storage *ss, size_t *sslen, int af);
  
@@ -335,10 +335,10 @@ diff -up nmap-6.47/ncat/ncat_core.h.allresolve nmap-6.47/ncat/ncat_core.h
  int fdinfo_close(struct fdinfo *fdn);
  int fdinfo_recv(struct fdinfo *fdn, char *buf, size_t size);
  int fdinfo_send(struct fdinfo *fdn, const char *buf, size_t size);
-diff -up nmap-6.47/ncat/ncat_main.c.allresolve nmap-6.47/ncat/ncat_main.c
---- nmap-6.47/ncat/ncat_main.c.allresolve	2015-08-31 17:46:41.340244438 +0200
-+++ nmap-6.47/ncat/ncat_main.c	2015-08-31 17:46:41.348244403 +0200
-@@ -648,15 +648,20 @@ int main(int argc, char *argv[])
+diff -up nmap-7.00/ncat/ncat_main.c.allresolve nmap-7.00/ncat/ncat_main.c
+--- nmap-7.00/ncat/ncat_main.c.allresolve	2015-11-20 14:15:51.757905070 +0100
++++ nmap-7.00/ncat/ncat_main.c	2015-11-20 14:15:51.764905042 +0100
+@@ -679,15 +679,20 @@ int main(int argc, char *argv[])
      }
  #endif  /* HAVE_SYS_UN_H */
  
@@ -363,7 +363,7 @@ diff -up nmap-6.47/ncat/ncat_main.c.allresolve nmap-6.47/ncat/ncat_main.c
      }
  
      if (o.proxyaddr) {
-@@ -672,12 +677,12 @@ int main(int argc, char *argv[])
+@@ -703,12 +708,12 @@ int main(int argc, char *argv[])
               * (due to the colons in the IPv6 address and host:port separator).
               */
  
@@ -380,7 +380,7 @@ diff -up nmap-6.47/ncat/ncat_main.c.allresolve nmap-6.47/ncat/ncat_main.c
              }
          } else {
              bye("Invalid proxy type \"%s\".", o.proxytype);
-@@ -746,10 +751,10 @@ int main(int argc, char *argv[])
+@@ -777,10 +782,10 @@ int main(int argc, char *argv[])
      } else {
  #if HAVE_SYS_UN_H
          if (o.af == AF_UNIX) {
@@ -395,7 +395,7 @@ diff -up nmap-6.47/ncat/ncat_main.c.allresolve nmap-6.47/ncat/ncat_main.c
              o.target = argv[optind];
              optind++;
          } else
-@@ -763,7 +768,7 @@ int main(int argc, char *argv[])
+@@ -794,7 +799,7 @@ int main(int argc, char *argv[])
               * targetss contains data already and you don't want remove them
               */
              if( !o.proxytype
@@ -404,7 +404,7 @@ diff -up nmap-6.47/ncat/ncat_main.c.allresolve nmap-6.47/ncat/ncat_main.c
  
                  bye("Could not resolve hostname \"%s\": %s.", o.target, gai_strerror(rc));
              optind++;
-@@ -801,21 +806,28 @@ int main(int argc, char *argv[])
+@@ -832,21 +837,28 @@ int main(int argc, char *argv[])
  
      if (o.proxytype && !o.listen)
          ; /* Do nothing - port is already set to proxyport  */
@@ -444,7 +444,7 @@ diff -up nmap-6.47/ncat/ncat_main.c.allresolve nmap-6.47/ncat/ncat_main.c
  
      if (srcport != -1) {
          if (o.listen) {
-@@ -827,7 +839,7 @@ int main(int argc, char *argv[])
+@@ -858,7 +870,7 @@ int main(int argc, char *argv[])
                  /* We have a source port but not an explicit source address;
                     fill in an unspecified address of the same family as the
                     target. */
@@ -453,7 +453,7 @@ diff -up nmap-6.47/ncat/ncat_main.c.allresolve nmap-6.47/ncat/ncat_main.c
                  if (srcaddr.storage.ss_family == AF_INET)
                      srcaddr.in.sin_addr.s_addr = INADDR_ANY;
                  else if (srcaddr.storage.ss_family == AF_INET6)
-@@ -919,8 +931,8 @@ static int ncat_listen_mode(void)
+@@ -950,8 +962,8 @@ static int ncat_listen_mode(void)
          bye("/bin/sh is not executable, so `-c' won't work.");
  #endif
  
@@ -464,10 +464,10 @@ diff -up nmap-6.47/ncat/ncat_main.c.allresolve nmap-6.47/ncat/ncat_main.c
      } else {
          size_t ss_len;
          int rc;
-diff -up nmap-6.47/ncat/util.c.allresolve nmap-6.47/ncat/util.c
---- nmap-6.47/ncat/util.c.allresolve	2014-08-16 04:45:47.000000000 +0200
-+++ nmap-6.47/ncat/util.c	2015-08-31 17:46:41.348244403 +0200
-@@ -490,7 +490,7 @@ int do_connect(int type)
+diff -up nmap-7.00/ncat/util.c.allresolve nmap-7.00/ncat/util.c
+--- nmap-7.00/ncat/util.c.allresolve	2015-06-20 23:56:01.000000000 +0200
++++ nmap-7.00/ncat/util.c	2015-11-20 14:15:51.764905042 +0100
+@@ -503,7 +503,7 @@ int do_connect(int type)
      /* We need a socket that can be inherited by child processes in
         ncat_exec_win.c, for --exec and --sh-exec. inheritable_socket is from
         nbase. */
@@ -476,7 +476,7 @@ diff -up nmap-6.47/ncat/util.c.allresolve nmap-6.47/ncat/util.c
  
      if (srcaddr.storage.ss_family != AF_UNSPEC) {
          size_t sa_len;
-@@ -507,7 +507,7 @@ int do_connect(int type)
+@@ -520,7 +520,7 @@ int do_connect(int type)
      }
  
      if (sock != -1) {

@@ -5,9 +5,9 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Epoch: 2
-Version: 6.47
+Version: 7.00
 #global prerelease TEST5
-Release: 5%{?dist}
+Release: 1%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -28,8 +28,6 @@ Patch2: nmap-4.52-noms.patch
 Patch5: ncat_reg_stdin.diff
 Patch6: nmap-6.25-displayerror.patch
 
-#rhbz#994376
-Patch7: nmap-6.40-logdebug.patch
 #sent upstream, rhbz#978964
 Patch8: nmap-6.40-allresolve.patch
 
@@ -84,7 +82,6 @@ uses.
 %patch2 -p1 -b .noms
 %patch5 -p1 -b .ncat_reg_stdin
 %patch6 -p1 -b .displayerror
-%patch7 -p1 -b .logdebug
 %patch8 -p1 -b .allresolve
 
 # for aarch64 support, not needed with autotools 2.69+
@@ -125,6 +122,9 @@ rm -f $RPM_BUILD_ROOT%{_bindir}/uninstall_zenmap
 #do not include certificate bundle (#734389)
 rm -f $RPM_BUILD_ROOT%{_datadir}/ncat/ca-bundle.crt
 rmdir $RPM_BUILD_ROOT%{_datadir}/ncat
+
+#do not include uninstall script
+rm -f $RPM_BUILD_ROOT%{_bindir}/uninstall_ndiff
 
 #use consolehelper
 rm -f $RPM_BUILD_ROOT%{_datadir}/applications/zenmap*.desktop
