@@ -5,7 +5,7 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Epoch: 2
-Version: 7.11
+Version: 7.12
 #global prerelease TEST5
 Release: 1%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
@@ -221,6 +221,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Mar 31 2016 Michal Hlavinka <mhlavink@redhat.com> - 2:7.12-1
+- nmap updated to 7.12
+
 * Wed Mar 23 2016 Michal Hlavinka <mhlavink@redhat.com> - 2:7.11-1
 - nmap updated to 7.11
 
