@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 2
 Version: 7.12
 #global prerelease TEST5
-Release: 1%{?dist}
+Release: 2%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -221,6 +221,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Tue Jul 19 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2:7.12-2
+- https://fedoraproject.org/wiki/Changes/Automatic_Provides_for_Python_RPM_Packages
+
 * Thu Mar 31 2016 Michal Hlavinka <mhlavink@redhat.com> - 2:7.12-1
 - nmap updated to 7.12
 
