@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 2
 Version: 7.40
 #global prerelease TEST5
-Release: 1%{?dist}
+Release: 2%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -221,6 +221,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2:7.40-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Tue Jan 03 2017 Michal Hlavinka <mhlavink@redhat.com> - 2:7.40-1
 - nmap updated to 7.40
 
