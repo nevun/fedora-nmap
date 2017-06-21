@@ -5,9 +5,9 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Epoch: 2
-Version: 7.40
+Version: 7.50
 #global prerelease TEST5
-Release: 2%{?dist}
+Release: 1%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -28,8 +28,6 @@ Patch2: nmap-4.52-noms.patch
 Patch5: ncat_reg_stdin.diff
 Patch6: nmap-6.25-displayerror.patch
 
-#sent upstream, rhbz#978964
-Patch8: nmap-6.40-allresolve.patch
 
 URL: http://nmap.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -82,7 +80,6 @@ uses.
 %patch2 -p1 -b .noms
 %patch5 -p1 -b .ncat_reg_stdin
 %patch6 -p1 -b .displayerror
-%patch8 -p1 -b .allresolve
 
 # for aarch64 support, not needed with autotools 2.69+
 for f in acinclude.m4 configure.ac nping/configure.ac
@@ -221,6 +218,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Wed Jun 21 2017 Pavel Zhukov <landgraf@fedoraproject.org> - 2:7.50-1
+- New release (7.50)
+
 * Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2:7.40-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
