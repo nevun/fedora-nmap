@@ -1,4 +1,5 @@
-#TODO: stop using local copy of libdnet, once system distributed version supports sctp (grep sctp /usr/include/dnet.h)
+#TODO: stop using local copy of libdnet, once system distributed version 
+#supports sctp (grep sctp /usr/include/dnet.h)
 
 %global _hardened_build 1
 
@@ -7,7 +8,7 @@ Name: nmap
 Epoch: 2
 Version: 7.50
 #global prerelease TEST5
-Release: 2%{?dist}
+Release: 3%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -46,8 +47,8 @@ and port specification, decoy scanning, determination of TCP sequence
 predictability characteristics, reverse-identd scanning, and more. In addition
 to the classic command-line nmap executable, the Nmap suite includes a flexible
 data transfer, redirection, and debugging tool (netcat utility ncat), a utility
-for comparing scan results (ndiff), and a packet generation and response analysis
-tool (nping). 
+for comparing scan results (ndiff), and a packet generation and response
+analysis tool (nping). 
 
 %package frontend
 Summary: The GTK+ front end for nmap
@@ -104,7 +105,7 @@ sed -i 's|^LOCALE_DIR = .*|LOCALE_DIR = join(prefix, "share", "locale")|' zenmap
 %build
 export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 export CXXFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
-#%configure  --with-libpcap=/usr ###TODO###
+### TODO ## configure  --with-libpcap=/usr ###TODO###
 %configure  --with-libpcap=/usr --with-liblua=included
 make %{?_smp_mflags}
 
@@ -130,7 +131,7 @@ rm -f $RPM_BUILD_ROOT%{_datadir}/applications/zenmap*.desktop
 rm -f $RPM_BUILD_ROOT%{_datadir}/zenmap/su-to-zenmap.sh
 ln -s consolehelper $RPM_BUILD_ROOT%{_bindir}/zenmap-root
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pam.d \
-	$RPM_BUILD_ROOT%{_sysconfdir}/security/console.apps
+    $RPM_BUILD_ROOT%{_sysconfdir}/security/console.apps
 install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/zenmap-root
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/security/console.apps/zenmap-root
 
@@ -146,9 +147,9 @@ ln -s ncat.1.gz $RPM_BUILD_ROOT%{_mandir}/man1/nc.1.gz
 ln -s ncat $RPM_BUILD_ROOT%{_bindir}/nc
 
 desktop-file-install --vendor nmap \
-	--dir $RPM_BUILD_ROOT%{_datadir}/applications \
-	--add-category X-Red-Hat-Base \
-	%{SOURCE1};
+    --dir $RPM_BUILD_ROOT%{_datadir}/applications \
+    --add-category X-Red-Hat-Base \
+    %{SOURCE1};
 
 #for .desktop and app icon
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/256x256/apps
@@ -220,8 +221,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
-* Fri Jun 30 2017 Pavel Zhukov <landgraf@fedoraproject.org> - 2:7.50-2
+* Fri Jun 30 2017 Pavel Zhukov <landgraf@fedoraproject.org> - 2:7.50-3
 - Add provides for nc6 (#1348348)
+- Fix rpmlint errors
 
 * Wed Jun 21 2017 Pavel Zhukov <landgraf@fedoraproject.org> - 2:7.50-1
 - New release (7.50)
@@ -681,21 +683,21 @@ rm -rf $RPM_BUILD_ROOT
 
 * Mon Dec 13 1999 Tim Powers <timp@redhat.com>
 - based on origional spec file from
-	http://www.insecure.org/nmap/index.html#download
+    http://www.insecure.org/nmap/index.html#download
 - general cleanups, removed lots of commenrts since it madethe spec hard to
-	read
+    read
 - changed group to Applications/System
 - quiet setup
 - no need to create dirs in the install section, "make
-	prefix=$RPM_BUILD_ROOT&{prefix} install" does this.
+    prefix=$RPM_BUILD_ROOT&{prefix} install" does this.
 - using defined %%{prefix}, %%{version} etc. for easier/quicker maint.
 - added docs
 - gzip man pages
 - strip after files have been installed into buildroot
 - created separate package for the frontend so that Gtk+ isn't needed for the
-	CLI nmap 
+    CLI nmap 
 - not using -f in files section anymore, no need for it since there aren't that
-	many files/dirs
+    many files/dirs
 - added desktop entry for gnome
 
 * Sun Jan 10 1999 Fyodor <fyodor@dhp.com>
