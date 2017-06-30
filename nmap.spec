@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 2
 Version: 7.50
 #global prerelease TEST5
-Release: 1%{?dist}
+Release: 2%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -63,7 +63,9 @@ be installed before installing nmap front end.
 Group:   Applications/System
 Summary: Nmap's Netcat replacement
 Obsoletes: nc < 1.109.20120711-2
-Provides: nc
+Obsoletes: nc6 < 1.00-22
+Provides: nc nc6
+
 %description ncat
 Ncat is a feature packed networking utility which will read and
 write data across a network from the command line.  It uses both
@@ -218,6 +220,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Fri Jun 30 2017 Pavel Zhukov <landgraf@fedoraproject.org> - 2:7.50-2
+- Add provides for nc6 (#1348348)
+
 * Wed Jun 21 2017 Pavel Zhukov <landgraf@fedoraproject.org> - 2:7.50-1
 - New release (7.50)
 
