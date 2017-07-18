@@ -8,7 +8,7 @@ Name: nmap
 Epoch: 2
 Version: 7.50
 #global prerelease TEST5
-Release: 3%{?dist}
+Release: 6%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -53,8 +53,9 @@ analysis tool (nping).
 %package frontend
 Summary: The GTK+ front end for nmap
 Group: Applications/System
-Requires: nmap = %{epoch}:%{version} gtk2 python >= 2.5 pygtk2 usermode
-BuildRequires: python >= 2.5 python-devel pygtk2-devel libpng-devel
+Requires: nmap = %{epoch}:%{version} gtk2 python2 >= 2.5 pygtk2 usermode
+Requires: nmap-ndiff = %{epoch}-%{version}
+BuildRequires: python2-devel pygtk2-devel libpng-devel 
 BuildArch: noarch
 %description frontend
 This package includes zenmap, a GTK+ front end for nmap. The nmap package must
@@ -75,6 +76,14 @@ back-end tool to instantly provide network connectivity to other
 applications and users. Ncat will not only work with IPv4 and IPv6
 but provides the user with a virtually limitless number of potential
 uses.
+
+%package ndiff
+Summary: Ndiff is a tool to aid in the comparison of Nmap scans
+Group:   Applications/System
+BuildRequires: python2 >= 2.5  nmap = %{epoch}:%{version}
+
+%description ndiff
+%{summary}
 
 
 %prep
@@ -106,7 +115,7 @@ sed -i 's|^LOCALE_DIR = .*|LOCALE_DIR = join(prefix, "share", "locale")|' zenmap
 export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 export CXXFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 ### TODO ## configure  --with-libpcap=/usr ###TODO###
-%configure  --with-libpcap=/usr --with-liblua=included
+%configure  --with-libpcap=/usr --with-liblua=included --enable-dbus
 make %{?_smp_mflags}
 
 #fix man page (rhbz#813734)
@@ -184,25 +193,28 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 rm -rf $RPM_BUILD_ROOT
 
 %files -f nmap.lang
-%defattr(-,root,root)
 %doc COPYING*
 %doc docs/README
 %doc docs/nmap.usage.txt
 %{_bindir}/nmap
 %{_bindir}/ndiff
 %{_bindir}/nping
-%{_mandir}/man1/ndiff.1.gz
 %{_mandir}/man1/nmap.1.gz
 %{_mandir}/man1/nping.1.gz
 %{_datadir}/nmap
 
 %files ncat 
-%defattr(-,root,root)
 %doc COPYING ncat/docs/AUTHORS ncat/docs/README ncat/docs/THANKS ncat/docs/examples
 %{_bindir}/nc
 %{_bindir}/ncat
 %{_mandir}/man1/nc.1.gz
 %{_mandir}/man1/ncat.1.gz
+
+%files ndiff
+%{_bindir}/ndiff
+%{python_sitelib}/ndiff.py
+%{python_sitelib}/ndiff.py?
+%{_mandir}/man1/ndiff.1.gz
 
 %files frontend -f zenmap.lang
 %defattr(-,root,root)
@@ -212,7 +224,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/zenmap
 %{_bindir}/nmapfe
 %{_bindir}/xnmap
-%{python_sitelib}/*
+%{python_sitelib}/radialnet
+%{python_sitelib}/zenmap*
 %{_datadir}/applications/nmap-zenmap.desktop
 %{_datadir}/icons/hicolor/256x256/apps/*
 %{_datadir}/zenmap
@@ -221,6 +234,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Tue Jul 18 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.50-6
+- Add missed py[co] files
+
+* Tue Jul 18 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.50-5
+- Move ndiff to subpackage (#1471999)
+- Specify python version 
+
 * Fri Jun 30 2017 Pavel Zhukov <landgraf@fedoraproject.org> - 2:7.50-3
 - Add provides for nc6 (#1348348)
 - Fix rpmlint errors
