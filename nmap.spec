@@ -8,7 +8,7 @@ Name: nmap
 Epoch: 2
 Version: 7.50
 #global prerelease TEST5
-Release: 7%{?dist}
+Release: 8%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -54,7 +54,7 @@ analysis tool (nping).
 Summary: The GTK+ front end for nmap
 Group: Applications/System
 Requires: nmap = %{epoch}:%{version} gtk2 python2 >= 2.5 pygtk2 usermode
-Requires: nmap-ndiff = %{epoch}-%{version}
+Requires: nmap-ndiff = %{epoch}:%{version}
 BuildRequires: python2-devel pygtk2-devel libpng-devel 
 BuildArch: noarch
 %description frontend
@@ -80,7 +80,8 @@ uses.
 %package ndiff
 Summary: Ndiff is a tool to aid in the comparison of Nmap scans
 Group:   Applications/System
-BuildRequires: python2 >= 2.5  nmap = %{epoch}:%{version}
+BuildRequires: python2 >= 2.5
+Requires: nmap = %{epoch}:%{version}
 BuildArch: noarch
 
 %description ndiff
@@ -235,8 +236,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
-* Wed Jul 19 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.50-7
+* Wed Jul 19 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.50-8
 - change ndiff arch to noarch
+- Move nmap to Requires (was in BR)
 
 * Tue Jul 18 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.50-6
 - Add missed py[co] files
