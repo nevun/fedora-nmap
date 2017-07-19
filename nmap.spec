@@ -1,4 +1,4 @@
-#TODO: stop using local copy of libdnet, once system distributed version 
+#Todo: stop using local copy of libdnet, once system distributed version 
 #supports sctp (grep sctp /usr/include/dnet.h)
 
 %global _hardened_build 1
@@ -8,7 +8,7 @@ Name: nmap
 Epoch: 2
 Version: 7.50
 #global prerelease TEST5
-Release: 6%{?dist}
+Release: 7%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -81,6 +81,7 @@ uses.
 Summary: Ndiff is a tool to aid in the comparison of Nmap scans
 Group:   Applications/System
 BuildRequires: python2 >= 2.5  nmap = %{epoch}:%{version}
+BuildArch: noarch
 
 %description ndiff
 %{summary}
@@ -234,6 +235,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Wed Jul 19 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.50-7
+- change ndiff arch to noarch
+
 * Tue Jul 18 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.50-6
 - Add missed py[co] files
 
