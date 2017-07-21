@@ -8,7 +8,7 @@ Name: nmap
 Epoch: 2
 Version: 7.50
 #global prerelease TEST5
-Release: 8%{?dist}
+Release: 9%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -199,7 +199,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc docs/README
 %doc docs/nmap.usage.txt
 %{_bindir}/nmap
-%{_bindir}/ndiff
 %{_bindir}/nping
 %{_mandir}/man1/nmap.1.gz
 %{_mandir}/man1/nping.1.gz
@@ -236,6 +235,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Fri Jul 21 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.50-9
+- Don't ship ndiff in nmap package
+
 * Wed Jul 19 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.50-8
 - change ndiff arch to noarch
 - Move nmap to Requires (was in BR)
