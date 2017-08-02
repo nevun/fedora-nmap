@@ -6,9 +6,9 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Epoch: 2
-Version: 7.50
+Version: 7.60
 #global prerelease TEST5
-Release: 10%{?dist}
+Release: 1%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -235,6 +235,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Wed Aug 02 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-1
+- New release 7.60 (#1477387)
+
 * Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2:7.50-10
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
