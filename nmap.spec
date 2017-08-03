@@ -8,7 +8,7 @@ Name: nmap
 Epoch: 2
 Version: 7.60
 #global prerelease TEST5
-Release: 1%{?dist}
+Release: 2%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -28,6 +28,8 @@ Patch2: nmap-4.52-noms.patch
 # upstream provided patch for rhbz#845005, not yet in upstream repository
 Patch5: ncat_reg_stdin.diff
 Patch6: nmap-6.25-displayerror.patch
+# Use system libssh2
+Patch7: %{name}-7.60-libssh2.patch
 
 
 URL: http://nmap.org/
@@ -35,6 +37,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: openssl-devel, gtk2-devel, lua-devel, libpcap-devel, pcre-devel
 BuildRequires: desktop-file-utils, dos2unix
 BuildRequires: libtool, automake, autoconf, gettext-devel
+BuildRequires: libssh2
 
 %define pixmap_srcdir zenmap/share/pixmaps
 
@@ -94,6 +97,7 @@ BuildArch: noarch
 %patch2 -p1 -b .noms
 %patch5 -p1 -b .ncat_reg_stdin
 %patch6 -p1 -b .displayerror
+%patch7 -p1 -b .libssh2
 
 # for aarch64 support, not needed with autotools 2.69+
 for f in acinclude.m4 configure.ac nping/configure.ac
@@ -105,7 +109,7 @@ cd nping; autoreconf -I .. -fiv --no-recursive; cd ..
 
 #be sure we're not using tarballed copies of some libraries
 #rm -rf liblua libpcap libpcre macosx mswin32 ###TODO###
-rm -rf libpcap libpcre macosx mswin32
+rm -rf libpcap libpcre macosx mswin32 libssh2
 
 #fix locale dir
 mv zenmap/share/zenmap/locale zenmap/share
@@ -117,7 +121,7 @@ sed -i 's|^LOCALE_DIR = .*|LOCALE_DIR = join(prefix, "share", "locale")|' zenmap
 export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 export CXXFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 ### TODO ## configure  --with-libpcap=/usr ###TODO###
-%configure  --with-libpcap=/usr --with-liblua=included --enable-dbus
+%configure  --with-libpcap=yes --with-liblua=included --enable-dbus --with-libssh2=yes
 make %{?_smp_mflags}
 
 #fix man page (rhbz#813734)
@@ -235,6 +239,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Aug  3 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-2
+- Delete bundled libssh2
+
 * Wed Aug 02 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-1
 - New release 7.60 (#1477387)
 
