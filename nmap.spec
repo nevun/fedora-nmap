@@ -8,7 +8,7 @@ Name: nmap
 Epoch: 2
 Version: 7.60
 #global prerelease TEST5
-Release: 5%{?dist}
+Release: 6%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -28,6 +28,7 @@ Patch2: nmap-4.52-noms.patch
 # upstream provided patch for rhbz#845005, not yet in upstream repository
 Patch5: ncat_reg_stdin.diff
 Patch6: nmap-6.25-displayerror.patch
+Patch7: nmap-7.60-bundled_libssh2_libz.patch
 
 URL: http://nmap.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -94,19 +95,12 @@ BuildArch: noarch
 %patch2 -p1 -b .noms
 %patch5 -p1 -b .ncat_reg_stdin
 %patch6 -p1 -b .displayerror
+%patch7 -p1 -b .libssh2
 
 #be sure we're not using tarballed copies of some libraries
 #rm -rf liblua libpcap libpcre macosx mswin32 ###TODO###
 
-## Deleteling libssh2 and libz but keeping
-## nmap specific definition
-for lib in libssh2 libz; do
-  mkdir ".${lib}" && cp "${lib}/${lib}v.h" ".${lib}/"
-  rm -rf "$lib"
-  mv ".${lib}" "${lib}"
-done;
-
-rm -rf libpcap libpcre macosx mswin32
+rm -rf libpcap libpcre macosx mswin32 libssh2 libz
 
 # for aarch64 support, not needed with autotools 2.69+
 for f in acinclude.m4 configure.ac nping/configure.ac
@@ -245,6 +239,9 @@ rm -rf %{buildroot}
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Aug  3 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-7
+- Fix library version for non-included libraries
+
 * Thu Aug  3 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-4
 - Keep nmap specific libssh and libz headers
 - Drop unused libssh2 patch
