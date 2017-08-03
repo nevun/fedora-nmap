@@ -8,7 +8,7 @@ Name: nmap
 Epoch: 2
 Version: 7.60
 #global prerelease TEST5
-Release: 2%{?dist}
+Release: 3%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -37,7 +37,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: openssl-devel, gtk2-devel, lua-devel, libpcap-devel, pcre-devel
 BuildRequires: desktop-file-utils, dos2unix
 BuildRequires: libtool, automake, autoconf, gettext-devel
-BuildRequires: libssh2
+BuildRequires: libssh2-devel
 
 %define pixmap_srcdir zenmap/share/pixmaps
 
@@ -58,7 +58,7 @@ Summary: The GTK+ front end for nmap
 Group: Applications/System
 Requires: nmap = %{epoch}:%{version} gtk2 python2 >= 2.5 pygtk2 usermode
 Requires: nmap-ndiff = %{epoch}:%{version}
-BuildRequires: python2-devel pygtk2-devel libpng-devel 
+BuildRequires: python2-devel pygtk2-devel libpng-devel
 BuildArch: noarch
 %description frontend
 This package includes zenmap, a GTK+ front end for nmap. The nmap package must
@@ -99,6 +99,10 @@ BuildArch: noarch
 %patch6 -p1 -b .displayerror
 %patch7 -p1 -b .libssh2
 
+#be sure we're not using tarballed copies of some libraries
+#rm -rf liblua libpcap libpcre macosx mswin32 ###TODO###
+rm -rf libpcap libpcre macosx mswin32 libssh2 libz
+
 # for aarch64 support, not needed with autotools 2.69+
 for f in acinclude.m4 configure.ac nping/configure.ac
 do
@@ -107,9 +111,6 @@ done
 autoreconf -I . -fiv --no-recursive
 cd nping; autoreconf -I .. -fiv --no-recursive; cd ..
 
-#be sure we're not using tarballed copies of some libraries
-#rm -rf liblua libpcap libpcre macosx mswin32 ###TODO###
-rm -rf libpcap libpcre macosx mswin32 libssh2
 
 #fix locale dir
 mv zenmap/share/zenmap/locale zenmap/share
@@ -128,50 +129,50 @@ make %{?_smp_mflags}
 sed -i 's/-md/-mf/' nping/docs/nping.1
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 #prevent stripping - replace strip command with 'true'
-make DESTDIR=$RPM_BUILD_ROOT STRIP=true install
-rm -f $RPM_BUILD_ROOT%{_bindir}/uninstall_zenmap
+make DESTDIR=%{buildroot} STRIP=true install
+rm -f %{buildroot}%{_bindir}/uninstall_zenmap
 
 #do not include certificate bundle (#734389)
-rm -f $RPM_BUILD_ROOT%{_datadir}/ncat/ca-bundle.crt
-rmdir $RPM_BUILD_ROOT%{_datadir}/ncat
+rm -f %{buildroot}%{_datadir}/ncat/ca-bundle.crt
+rmdir %{buildroot}%{_datadir}/ncat
 
 #do not include uninstall script
-rm -f $RPM_BUILD_ROOT%{_bindir}/uninstall_ndiff
+rm -f %{buildroot}%{_bindir}/uninstall_ndiff
 
 #use consolehelper
-rm -f $RPM_BUILD_ROOT%{_datadir}/applications/zenmap*.desktop
-rm -f $RPM_BUILD_ROOT%{_datadir}/zenmap/su-to-zenmap.sh
-ln -s consolehelper $RPM_BUILD_ROOT%{_bindir}/zenmap-root
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pam.d \
-    $RPM_BUILD_ROOT%{_sysconfdir}/security/console.apps
-install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/zenmap-root
-install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/security/console.apps/zenmap-root
+rm -f %{buildroot}%{_datadir}/applications/zenmap*.desktop
+rm -f %{buildroot}%{_datadir}/zenmap/su-to-zenmap.sh
+ln -s consolehelper %{buildroot}%{_bindir}/zenmap-root
+mkdir -p %{buildroot}%{_sysconfdir}/pam.d \
+    %{buildroot}%{_sysconfdir}/security/console.apps
+install -m 0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pam.d/zenmap-root
+install -m 0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/security/console.apps/zenmap-root
 
-cp docs/zenmap.1 $RPM_BUILD_ROOT%{_mandir}/man1/
-gzip $RPM_BUILD_ROOT%{_mandir}/man1/* || :
-pushd $RPM_BUILD_ROOT%{_mandir}/man1
+cp docs/zenmap.1 %{buildroot}%{_mandir}/man1/
+gzip %{buildroot}%{_mandir}/man1/* || :
+pushd %{buildroot}%{_mandir}/man1
 ln -s zenmap.1.gz nmapfe.1.gz
 ln -s zenmap.1.gz xnmap.1.gz
 popd
 
 #we provide 'nc' replacement
-ln -s ncat.1.gz $RPM_BUILD_ROOT%{_mandir}/man1/nc.1.gz
-ln -s ncat $RPM_BUILD_ROOT%{_bindir}/nc
+ln -s ncat.1.gz %{buildroot}%{_mandir}/man1/nc.1.gz
+ln -s ncat %{buildroot}%{_bindir}/nc
 
 desktop-file-install --vendor nmap \
-    --dir $RPM_BUILD_ROOT%{_datadir}/applications \
+    --dir %{buildroot}%{_datadir}/applications \
     --add-category X-Red-Hat-Base \
     %{SOURCE1};
 
 #for .desktop and app icon
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/256x256/apps
-ln -s ../../../../zenmap/pixmaps/zenmap.png $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/256x256/apps
+mkdir -p %{buildroot}%{_datadir}/icons/hicolor/256x256/apps
+ln -s ../../../../zenmap/pixmaps/zenmap.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps
 
 # fix end-of-line
-pushd $RPM_BUILD_ROOT
+pushd %{buildroot}
 for fe in ./%{python_sitelib}/zenmapCore/Paths.py
 do
   dos2unix <$fe >$fe.new
@@ -196,7 +197,7 @@ fi
 gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %files -f nmap.lang
 %doc COPYING*
@@ -241,6 +242,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Aug  3 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-2
 - Delete bundled libssh2
+- Delete bundled zlib
 
 * Wed Aug 02 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-1
 - New release 7.60 (#1477387)
@@ -646,7 +648,7 @@ rm -rf $RPM_BUILD_ROOT
 
 * Mon Nov 18 2002 Tim Powers <timp@redhat.com>
 - rebuild on all arches
-- remove old desktop file from $$RPM_BUILD_ROOT so rpm won't complain
+- remove old desktop file from $%{buildroot} so rpm won't complain
 
 * Thu Aug  1 2002 Harald Hoyer <harald@redhat.de>
 - version 3.0
@@ -694,7 +696,7 @@ rm -rf $RPM_BUILD_ROOT
 
 * Fri Nov  3 2000 Tim Powers <timp@redhat.com>
 - fixed nmapdatadir in the install section, forgot lto include
-  $RPM_BUILD_ROOT in the path
+  %{buildroot} in the path
 
 * Thu Nov  2 2000 Tim Powers <timp@redhat.com>
 - update to nmap-2.54BETA7 to possibly fix bug #20199
@@ -730,7 +732,7 @@ rm -rf $RPM_BUILD_ROOT
 - changed group to Applications/System
 - quiet setup
 - no need to create dirs in the install section, "make
-    prefix=$RPM_BUILD_ROOT&{prefix} install" does this.
+    prefix=%{buildroot}&{prefix} install" does this.
 - using defined %%{prefix}, %%{version} etc. for easier/quicker maint.
 - added docs
 - gzip man pages

@@ -1,29 +1,33 @@
 diff --git a/nmap.cc b/nmap.cc
-index c0a2edf..4ab7f3b 100644
+index c0a2edf..951c131 100644
 --- a/nmap.cc
 +++ b/nmap.cc
-@@ -182,7 +182,7 @@
+@@ -182,12 +182,26 @@
  #endif
  
  #if HAVE_LIBSSH2
--#include "libssh2/libssh2v.h"
++#ifdef LIBSSH2_INCLUDED
+ #include "libssh2/libssh2v.h"
+-#endif
++#else
 +#include "libssh2.h"
- #endif
++#ifndef LIBSSH2_VERSION_TEXT
++#define LIBSSH2_VERSION_TEXT "Libssh2 #LIBSSH2_VERSION"
++#endif /* LIBSSH2_VERSION_TEXT */
++#endif /* LIBSSH2_INCLUDED */
++#endif /* HAVE_LIBSSH2 */
  
  #if HAVE_LIBZ
-diff --git a/nmap.cc b/nmap.cc
-index 4ab7f3b..4864b3e 100644
---- a/nmap.cc
-+++ b/nmap.cc
-@@ -2844,9 +2844,9 @@ static void display_nmap_version() {
++#ifdef LIBZ_INCLUDED
+ #include "libz/libzv.h"
+-#endif
++#else
++#include "zlib.h"
++#ifndef LIBZ_VERSION_TEXT
++#define LIBZ_VERSION_TEXT "Libz #LIBZ_VERSION"
++#endif /* LIBZ_VERSION_TEXT */
++#endif /* LIBZ_INCLUDED */
++#endif /* HAVE_LIBZ */
  
- #if HAVE_LIBSSH2
- #ifdef LIBSSH2_INCLUDED
--  with.push_back(std::string("nmap-libssh2-") + get_word_or_quote(LIBSSH2_VERSION_TEXT, 1));
-+  with.push_back(std::string("nmap-libssh2-") + get_word_or_quote(LIBSSH2_VERSION_INVALID, 1));
- #else
--  with.push_back(std::string("libssh2-") + get_word_or_quote(LIBSSH2_VERSION_TEXT, 1));
-+  with.push_back(std::string("libssh2-") + get_word_or_quote(LIBSSH2_VERSION, 1));
- #endif
- #else
-   without.push_back("libssh2");
+ /* To get the version number only. */
+ #ifdef WIN32
