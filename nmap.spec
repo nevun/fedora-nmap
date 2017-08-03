@@ -8,7 +8,7 @@ Name: nmap
 Epoch: 2
 Version: 7.60
 #global prerelease TEST5
-Release: 3%{?dist}
+Release: 4%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -29,6 +29,7 @@ Patch2: nmap-4.52-noms.patch
 Patch5: ncat_reg_stdin.diff
 Patch6: nmap-6.25-displayerror.patch
 # Use system libssh2
+# https://github.com/nmap/nmap/pull/956
 Patch7: %{name}-7.60-libssh2.patch
 
 
@@ -240,7 +241,7 @@ rm -rf %{buildroot}
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
-* Thu Aug  3 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-2
+* Thu Aug  3 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-4
 - Delete bundled libssh2
 - Delete bundled zlib
 
