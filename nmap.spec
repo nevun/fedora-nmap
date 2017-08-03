@@ -8,7 +8,7 @@ Name: nmap
 Epoch: 2
 Version: 7.60
 #global prerelease TEST5
-Release: 4%{?dist}
+Release: 5%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -28,10 +28,6 @@ Patch2: nmap-4.52-noms.patch
 # upstream provided patch for rhbz#845005, not yet in upstream repository
 Patch5: ncat_reg_stdin.diff
 Patch6: nmap-6.25-displayerror.patch
-# Use system libssh2
-# https://github.com/nmap/nmap/pull/956
-Patch7: %{name}-7.60-libssh2.patch
-
 
 URL: http://nmap.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -98,11 +94,19 @@ BuildArch: noarch
 %patch2 -p1 -b .noms
 %patch5 -p1 -b .ncat_reg_stdin
 %patch6 -p1 -b .displayerror
-%patch7 -p1 -b .libssh2
 
 #be sure we're not using tarballed copies of some libraries
 #rm -rf liblua libpcap libpcre macosx mswin32 ###TODO###
-rm -rf libpcap libpcre macosx mswin32 libssh2 libz
+
+## Deleteling libssh2 and libz but keeping
+## nmap specific definition
+for lib in libssh2 libz; do
+  mkdir ".${lib}" && cp "${lib}/${lib}v.h" ".${lib}/"
+  rm -rf "$lib"
+  mv ".${lib}" "${lib}"
+done;
+
+rm -rf libpcap libpcre macosx mswin32
 
 # for aarch64 support, not needed with autotools 2.69+
 for f in acinclude.m4 configure.ac nping/configure.ac
@@ -241,6 +245,10 @@ rm -rf %{buildroot}
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Aug  3 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-4
+- Keep nmap specific libssh and libz headers
+- Drop unused libssh2 patch
+
 * Thu Aug  3 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-4
 - Delete bundled libssh2
 - Delete bundled zlib
@@ -649,7 +657,7 @@ rm -rf %{buildroot}
 
 * Mon Nov 18 2002 Tim Powers <timp@redhat.com>
 - rebuild on all arches
-- remove old desktop file from $%{buildroot} so rpm won't complain
+- remove old desktop file from $$RPM_BUILD_ROOT so rpm won't complain
 
 * Thu Aug  1 2002 Harald Hoyer <harald@redhat.de>
 - version 3.0
@@ -697,7 +705,7 @@ rm -rf %{buildroot}
 
 * Fri Nov  3 2000 Tim Powers <timp@redhat.com>
 - fixed nmapdatadir in the install section, forgot lto include
-  %{buildroot} in the path
+  $RPM_BUILD_ROOT in the path
 
 * Thu Nov  2 2000 Tim Powers <timp@redhat.com>
 - update to nmap-2.54BETA7 to possibly fix bug #20199
@@ -733,7 +741,7 @@ rm -rf %{buildroot}
 - changed group to Applications/System
 - quiet setup
 - no need to create dirs in the install section, "make
-    prefix=%{buildroot}&{prefix} install" does this.
+    prefix=$RPM_BUILD_ROOT&{prefix} install" does this.
 - using defined %%{prefix}, %%{version} etc. for easier/quicker maint.
 - added docs
 - gzip man pages
