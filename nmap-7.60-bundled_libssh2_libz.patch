@@ -1,48 +1,45 @@
-commit 32153fe41b9a3f461326348f16c9a71c6d980e89
-Author: Pavel Zhukov <pzhukov@redhat.com>
-Date:   Thu Aug 3 13:18:01 2017 +0200
+commit fd0db097498d5ff29f647508a80915d4d0e8d84a
+Author: dmiller <dmiller@e0a8ed71-7df4-0310-8962-fdc924857419>
+Date:   Thu Aug 3 15:16:49 2017 +0000
 
-    Use nmap-libssh2 and nmap-zlib headers for included only
-    
-    Nmap specific libssh2/libz headers contain hardcoded version number thus
-    version information is incorrect if system version of library is chosen.
+    Report appropriate zlib/libssh2 versions. Closes #957
 
 diff --git a/nmap.cc b/nmap.cc
-index 512cb4a6e..79f7e77b5 100644
+index 512cb4a6e..5345d7311 100644
 --- a/nmap.cc
 +++ b/nmap.cc
-@@ -182,11 +182,19 @@
+@@ -182,11 +182,11 @@
  #endif
  
  #if HAVE_LIBSSH2
-+#ifdef LIBSSH2_INCLUDED
- #include "libssh2/libssh2v.h"
-+#else
-+#include "libssh2.h"
-+#endif
+-#include "libssh2/libssh2v.h"
++#include <libssh2.h>
  #endif
  
  #if HAVE_LIBZ
-+#ifdef ZLIB_INCLUDED
- #include "libz/libzv.h"
-+#else
-+#include "zlib.h"
-+#endif
+-#include "libz/libzv.h"
++#include <zlib.h>
  #endif
  
  /* To get the version number only. */
-@@ -2722,7 +2730,7 @@ static void display_nmap_version() {
+@@ -2720,9 +2720,9 @@ static void display_nmap_version() {
+ 
+ #if HAVE_LIBSSH2
  #ifdef LIBSSH2_INCLUDED
-   with.push_back(std::string("nmap-libssh2-") + get_word_or_quote(LIBSSH2_VERSION_TEXT, 1));
+-  with.push_back(std::string("nmap-libssh2-") + get_word_or_quote(LIBSSH2_VERSION_TEXT, 1));
++  with.push_back(std::string("nmap-libssh2-") + get_word_or_quote(LIBSSH2_VERSION, 0));
  #else
 -  with.push_back(std::string("libssh2-") + get_word_or_quote(LIBSSH2_VERSION_TEXT, 1));
 +  with.push_back(std::string("libssh2-") + get_word_or_quote(LIBSSH2_VERSION, 0));
  #endif
  #else
    without.push_back("libssh2");
-@@ -2732,7 +2740,7 @@ static void display_nmap_version() {
+@@ -2730,9 +2730,9 @@ static void display_nmap_version() {
+ 
+ #if HAVE_LIBZ
  #ifdef ZLIB_INCLUDED
-   with.push_back(std::string("nmap-libz-") + get_word_or_quote(LIBZ_VERSION_TEXT, 1));
+-  with.push_back(std::string("nmap-libz-") + get_word_or_quote(LIBZ_VERSION_TEXT, 1));
++  with.push_back(std::string("nmap-libz-") + get_word_or_quote(ZLIB_VERSION, 0));
  #else
 -  with.push_back(std::string("libz-") + get_word_or_quote(LIBZ_VERSION_TEXT, 1));
 +  with.push_back(std::string("libz-") + get_word_or_quote(ZLIB_VERSION, 0));

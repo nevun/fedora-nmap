@@ -8,7 +8,7 @@ Name: nmap
 Epoch: 2
 Version: 7.60
 #global prerelease TEST5
-Release: 6%{?dist}
+Release: 7%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -28,6 +28,7 @@ Patch2: nmap-4.52-noms.patch
 # upstream provided patch for rhbz#845005, not yet in upstream repository
 Patch5: ncat_reg_stdin.diff
 Patch6: nmap-6.25-displayerror.patch
+## https://github.com/nmap/nmap/commit/fd0db097498d5ff29f647508a80915d4d0e8d84a
 Patch7: nmap-7.60-bundled_libssh2_libz.patch
 
 URL: http://nmap.org/
@@ -240,6 +241,9 @@ rm -rf %{buildroot}
 
 %changelog
 * Thu Aug  3 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-7
+- Use upstream patch
+
+* Thu Aug  3 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-6
 - Fix library version for non-included libraries
 
 * Thu Aug  3 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-4
