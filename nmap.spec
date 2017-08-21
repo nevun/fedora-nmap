@@ -8,7 +8,7 @@ Name: nmap
 Epoch: 2
 Version: 7.60
 #global prerelease TEST5
-Release: 7%{?dist}
+Release: 8%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -17,7 +17,6 @@ Requires: %{name}-ncat = %{epoch}:%{version}-%{release}
 Source0: http://nmap.org/dist/%{name}-%{version}%{?prerelease}.tar.bz2
 Source1: zenmap.desktop
 Source2: zenmap-root.pamd
-Source3: zenmap-root.consoleapps
 
 #prevent possible race condition for shtool, rhbz#158996
 Patch1: nmap-4.03-mktemp.patch
@@ -30,6 +29,10 @@ Patch5: ncat_reg_stdin.diff
 Patch6: nmap-6.25-displayerror.patch
 ## https://github.com/nmap/nmap/commit/fd0db097498d5ff29f647508a80915d4d0e8d84a
 Patch7: nmap-7.60-bundled_libssh2_libz.patch
+# https://github.com/nmap/nmap/pull/973
+# https://github.com/nmap/nmap/pull/975
+Patch8: nmap-7.60-memleak.patch
+
 
 URL: http://nmap.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -97,6 +100,7 @@ BuildArch: noarch
 %patch5 -p1 -b .ncat_reg_stdin
 %patch6 -p1 -b .displayerror
 %patch7 -p1 -b .libssh2
+%patch8 -p1 -b .memleak
 
 #be sure we're not using tarballed copies of some libraries
 #rm -rf liblua libpcap libpcre macosx mswin32 ###TODO###
@@ -142,14 +146,9 @@ rmdir %{buildroot}%{_datadir}/ncat
 #do not include uninstall script
 rm -f %{buildroot}%{_bindir}/uninstall_ndiff
 
-#use consolehelper
 rm -f %{buildroot}%{_datadir}/applications/zenmap*.desktop
-rm -f %{buildroot}%{_datadir}/zenmap/su-to-zenmap.sh
-ln -s consolehelper %{buildroot}%{_bindir}/zenmap-root
-mkdir -p %{buildroot}%{_sysconfdir}/pam.d \
-    %{buildroot}%{_sysconfdir}/security/console.apps
+mkdir -p %{buildroot}%{_sysconfdir}/pam.d
 install -m 0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pam.d/zenmap-root
-install -m 0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/security/console.apps/zenmap-root
 
 cp docs/zenmap.1 %{buildroot}%{_mandir}/man1/
 gzip %{buildroot}%{_mandir}/man1/* || :
@@ -225,8 +224,6 @@ rm -rf %{buildroot}
 %files frontend -f zenmap.lang
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/pam.d/zenmap-root
-%config(noreplace) %{_sysconfdir}/security/console.apps/zenmap-root
-%{_bindir}/zenmap-root
 %{_bindir}/zenmap
 %{_bindir}/nmapfe
 %{_bindir}/xnmap
@@ -240,6 +237,9 @@ rm -rf %{buildroot}
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Mon Aug 21 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-8
+- Fix memory leaks on error
+
 * Thu Aug  3 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-7
 - Use upstream patch
 
