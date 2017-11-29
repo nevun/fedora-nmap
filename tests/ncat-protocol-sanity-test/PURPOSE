@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/nmap/Sanity/ncat-protocol-sanity-test
+Description: Test all supported protocols of ncat, like tcp, udp, ...
+Author: Patrik Kis <pkis@redhat.com>
+
+sanity test for nmap listening on TCP, SCTP, UDP
