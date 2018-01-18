@@ -8,7 +8,7 @@ Name: nmap
 Epoch: 2
 Version: 7.60
 #global prerelease TEST5
-Release: 8%{?dist}
+Release: 9%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -183,18 +183,6 @@ popd
 %find_lang nmap --with-man
 %find_lang zenmap
 
-%post frontend
-touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-
-%postun frontend
-if [ $1 -eq 0 ] ; then
-    touch --no-create %{_datadir}/icons/hicolor &>/dev/null
-    gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-fi
-
-%posttrans frontend
-gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-
 %clean
 rm -rf %{buildroot}
 
@@ -237,6 +225,9 @@ rm -rf %{buildroot}
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Jan 18 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 2:7.60-9
+- Remove obsolete scriptlets
+
 * Mon Aug 21 2017 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-8
 - Fix memory leaks on error
 
