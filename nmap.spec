@@ -8,7 +8,7 @@ Name: nmap
 Epoch: 2
 Version: 7.60
 #global prerelease TEST5
-Release: 10%{?dist}
+Release: 11%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -230,6 +230,9 @@ rm -rf %{buildroot}
 %{_mandir}/man1/xnmap.1.gz
 
 %changelog
+* Thu Feb 08 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2:7.60-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Mon Jan 22 2018 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-10
 - Print source address in UDP mode
 
