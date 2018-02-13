@@ -39,7 +39,6 @@ Patch9: nmap-7.60-udp_remoteaddr.patch
 
 
 URL: http://nmap.org/
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: openssl-devel, gtk2-devel, lua-devel, libpcap-devel, pcre-devel
 BuildRequires: desktop-file-utils, dos2unix
 BuildRequires: libtool, automake, autoconf, gettext-devel
