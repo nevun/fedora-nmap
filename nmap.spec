@@ -187,9 +187,6 @@ popd
 %find_lang nmap --with-man
 %find_lang zenmap
 
-%clean
-rm -rf %{buildroot}
-
 %files -f nmap.lang
 %doc COPYING*
 %doc docs/README
