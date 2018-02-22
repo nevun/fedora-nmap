@@ -1,0 +1,13 @@
+#!/usr/bin/expect
+
+set timeout 10
+
+spawn ncat -4 localhost 6666
+
+expect {
+    eof { exit 2 }
+    default { exit 1 }
+    "ServerSend\r" { sleep 1; send -- "ClientSend\r" }
+}
+sleep 1
+exit 0

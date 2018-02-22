@@ -1,0 +1,14 @@
+#!/usr/bin/expect
+
+set timeout 10
+
+spawn ncat -4 --udp localhost 6666
+
+send -- "ClientSend\r"
+expect {
+    eof { exit 2 }
+    default { exit 1 }
+    "ServerSend\r"
+}
+sleep 1
+exit 0
