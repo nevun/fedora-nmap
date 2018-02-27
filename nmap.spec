@@ -8,7 +8,7 @@ Name: nmap
 Epoch: 2
 Version: 7.60
 #global prerelease TEST5
-Release: 12%{?dist}
+Release: 13%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -17,6 +17,7 @@ Requires: %{name}-ncat = %{epoch}:%{version}-%{release}
 Source0: http://nmap.org/dist/%{name}-%{version}%{?prerelease}.tar.bz2
 Source1: zenmap.desktop
 Source2: zenmap-root.pamd
+Source3: zenmap.appdata.xml
 
 #prevent possible race condition for shtool, rhbz#158996
 Patch1: nmap-4.03-mktemp.patch
@@ -171,6 +172,9 @@ desktop-file-install --vendor nmap \
     --add-category X-Red-Hat-Base \
     %{SOURCE1};
 
+mkdir -p  %{buildroot}/%{_datadir}/metainfo/
+install -p -m 0644 %SOURCE3 %{buildroot}/%{_datadir}/metainfo/
+
 #for .desktop and app icon
 mkdir -p %{buildroot}%{_datadir}/icons/hicolor/256x256/apps
 ln -s ../../../../zenmap/pixmaps/zenmap.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps
@@ -225,8 +229,12 @@ popd
 %{_mandir}/man1/zenmap.1.gz
 %{_mandir}/man1/nmapfe.1.gz
 %{_mandir}/man1/xnmap.1.gz
+%{_datadir}/metainfo/zenmap.appdata.xml
 
 %changelog
+* Tue Feb 27 2018 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-13
+- Add appinfo file (#1476506)
+
 * Mon Feb 19 2018 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-12
 - add gcc-c++ BR
 
