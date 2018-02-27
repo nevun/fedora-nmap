@@ -8,7 +8,7 @@ Name: nmap
 Epoch: 2
 Version: 7.60
 #global prerelease TEST5
-Release: 13%{?dist}
+Release: 14%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -232,8 +232,8 @@ popd
 %{_datadir}/metainfo/zenmap.appdata.xml
 
 %changelog
-* Tue Feb 27 2018 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-13
-- Add appinfo file (#1476506)
+* Tue Feb 27 2018 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-14
+- Add appdata file (#1476506)
 
 * Mon Feb 19 2018 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-12
 - add gcc-c++ BR
