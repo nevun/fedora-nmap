@@ -6,9 +6,9 @@
 Summary: Network exploration tool and security scanner
 Name: nmap
 Epoch: 2
-Version: 7.60
+Version: 7.70
 #global prerelease TEST5
-Release: 14%{?dist}
+Release: 1%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -28,14 +28,6 @@ Patch2: nmap-4.52-noms.patch
 # upstream provided patch for rhbz#845005, not yet in upstream repository
 Patch5: ncat_reg_stdin.diff
 Patch6: nmap-6.25-displayerror.patch
-## https://github.com/nmap/nmap/commit/fd0db097498d5ff29f647508a80915d4d0e8d84a
-Patch7: nmap-7.60-bundled_libssh2_libz.patch
-# https://github.com/nmap/nmap/pull/973
-# https://github.com/nmap/nmap/pull/975
-Patch8: nmap-7.60-memleak.patch
-## e8b73078f Provides more meaningful information about the connecting client 
-## when in UDP listening mode. Closes #980 - nnposter, 4 months ago
-Patch9: nmap-7.60-udp_remoteaddr.patch
 
 
 
@@ -104,9 +96,6 @@ BuildArch: noarch
 %patch2 -p1 -b .noms
 %patch5 -p1 -b .ncat_reg_stdin
 %patch6 -p1 -b .displayerror
-%patch7 -p1 -b .libssh2
-%patch8 -p1 -b .memleak
-%patch9 -p1 -b .udp_address
 
 #be sure we're not using tarballed copies of some libraries
 #rm -rf liblua libpcap libpcre macosx mswin32 ###TODO###
@@ -232,6 +221,9 @@ popd
 %{_datadir}/metainfo/zenmap.appdata.xml
 
 %changelog
+* Wed Mar 21 2018 Pavel Zhukov <pzhukov@redhat.com> - 2:7.70-1
+- New version 7.70 (#1558770)
+
 * Tue Feb 27 2018 Pavel Zhukov <pzhukov@redhat.com> - 2:7.60-14
 - Add appdata file (#1476506)
 
