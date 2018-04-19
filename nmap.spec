@@ -2,22 +2,29 @@
 #supports sctp (grep sctp /usr/include/dnet.h)
 
 %global _hardened_build 1
+%if 0%{?fedora} && 0%{?fedora}  <= 28
+%global with_frontend 1
+%else
+%global with_frontend 0
+%endif
 
 Summary: Network exploration tool and security scanner
 Name: nmap
 Epoch: 2
 Version: 7.70
 #global prerelease TEST5
-Release: 1%{?dist}
+Release: 2%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
 Group: Applications/System
 Requires: %{name}-ncat = %{epoch}:%{version}-%{release}
 Source0: http://nmap.org/dist/%{name}-%{version}%{?prerelease}.tar.bz2
+%if %{with_frontend}
 Source1: zenmap.desktop
 Source2: zenmap-root.pamd
 Source3: zenmap.appdata.xml
+%endif
 
 #prevent possible race condition for shtool, rhbz#158996
 Patch1: nmap-4.03-mktemp.patch
@@ -52,6 +59,7 @@ data transfer, redirection, and debugging tool (netcat utility ncat), a utility
 for comparing scan results (ndiff), and a packet generation and response
 analysis tool (nping). 
 
+%if %{with_frontend}
 %package frontend
 Summary: The GTK+ front end for nmap
 Group: Applications/System
@@ -59,9 +67,21 @@ Requires: nmap = %{epoch}:%{version} gtk2 python2 >= 2.5 pygtk2 usermode
 Requires: nmap-ndiff = %{epoch}:%{version}
 BuildRequires: python2-devel pygtk2-devel libpng-devel
 BuildArch: noarch
+
 %description frontend
 This package includes zenmap, a GTK+ front end for nmap. The nmap package must
 be installed before installing nmap front end.
+
+%package ndiff
+Summary: Ndiff is a tool to aid in the comparison of Nmap scans
+Group:   Applications/System
+BuildRequires: python2 >= 2.5
+Requires: nmap = %{epoch}:%{version}
+BuildArch: noarch
+
+%description ndiff
+%{summary}
+%endif
 
 %package ncat
 Group:   Applications/System
@@ -79,15 +99,6 @@ applications and users. Ncat will not only work with IPv4 and IPv6
 but provides the user with a virtually limitless number of potential
 uses.
 
-%package ndiff
-Summary: Ndiff is a tool to aid in the comparison of Nmap scans
-Group:   Applications/System
-BuildRequires: python2 >= 2.5
-Requires: nmap = %{epoch}:%{version}
-BuildArch: noarch
-
-%description ndiff
-%{summary}
 
 
 %prep
@@ -110,34 +121,43 @@ done
 autoreconf -I . -fiv --no-recursive
 cd nping; autoreconf -I .. -fiv --no-recursive; cd ..
 
-
+%if %{with_frontend}
 #fix locale dir
 mv zenmap/share/zenmap/locale zenmap/share
 sed -i -e "s|^locale_dir =.*$|locale_dir = os.path.join('share','locale')|" \
  -e 's|join(self.install_data, data_dir)|join(self.install_data, "share")|' zenmap/setup.py
 sed -i 's|^LOCALE_DIR = .*|LOCALE_DIR = join(prefix, "share", "locale")|' zenmap/zenmapCore/Paths.py
+%endif
 
 %build
 export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 export CXXFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 ### TODO ## configure  --with-libpcap=/usr ###TODO###
-%configure  --with-libpcap=yes --with-liblua=included --enable-dbus --with-libssh2=yes
+%configure  --with-libpcap=yes --with-liblua=included \
+%if ! %{with_frontend}
+  --without-zenmap \
+  --without-ndiff \
+%endif
+  --enable-dbus --with-libssh2=yes 
 make %{?_smp_mflags}
 
 #fix man page (rhbz#813734)
 sed -i 's/-md/-mf/' nping/docs/nping.1
 
 %install
-rm -rf %{buildroot}
-
 #prevent stripping - replace strip command with 'true'
 make DESTDIR=%{buildroot} STRIP=true install
-rm -f %{buildroot}%{_bindir}/uninstall_zenmap
 
 #do not include certificate bundle (#734389)
 rm -f %{buildroot}%{_datadir}/ncat/ca-bundle.crt
 rmdir %{buildroot}%{_datadir}/ncat
 
+#we provide 'nc' replacement
+ln -s ncat.1.gz %{buildroot}%{_mandir}/man1/nc.1.gz
+ln -s ncat %{buildroot}%{_bindir}/nc
+
+%if %{with_frontend}
+rm -f %{buildroot}%{_bindir}/uninstall_zenmap
 #do not include uninstall script
 rm -f %{buildroot}%{_bindir}/uninstall_ndiff
 
@@ -152,9 +172,6 @@ ln -s zenmap.1.gz nmapfe.1.gz
 ln -s zenmap.1.gz xnmap.1.gz
 popd
 
-#we provide 'nc' replacement
-ln -s ncat.1.gz %{buildroot}%{_mandir}/man1/nc.1.gz
-ln -s ncat %{buildroot}%{_bindir}/nc
 
 desktop-file-install --vendor nmap \
     --dir %{buildroot}%{_datadir}/applications \
@@ -177,9 +194,10 @@ do
   mv -f $fe.new $fe
 done
 popd
+%find_lang zenmap
+%endif
 
 %find_lang nmap --with-man
-%find_lang zenmap
 
 %files -f nmap.lang
 %doc COPYING*
@@ -198,6 +216,7 @@ popd
 %{_mandir}/man1/nc.1.gz
 %{_mandir}/man1/ncat.1.gz
 
+%if %{with_frontend}
 %files ndiff
 %{_bindir}/ndiff
 %{python_sitelib}/ndiff.py
@@ -219,8 +238,12 @@ popd
 %{_mandir}/man1/nmapfe.1.gz
 %{_mandir}/man1/xnmap.1.gz
 %{_datadir}/metainfo/zenmap.appdata.xml
+%endif
 
 %changelog
+* Thu Apr 19 2018 Pavel Zhukov <pzhukov@redhat.com> - 2:7.70-2
+- Do not build zenmap and ndiff because of python2 deprecation
+
 * Wed Mar 21 2018 Pavel Zhukov <pzhukov@redhat.com> - 2:7.70-1
 - New version 7.70 (#1558770)
 
