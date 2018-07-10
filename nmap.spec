@@ -224,7 +224,6 @@ popd
 %{_mandir}/man1/ndiff.1.gz
 
 %files frontend -f zenmap.lang
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/pam.d/zenmap-root
 %{_bindir}/zenmap
 %{_bindir}/nmapfe
