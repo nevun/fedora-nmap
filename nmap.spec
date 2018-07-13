@@ -13,7 +13,7 @@ Name: nmap
 Epoch: 2
 Version: 7.70
 #global prerelease TEST5
-Release: 2%{?dist}
+Release: 3%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -240,6 +240,9 @@ popd
 %endif
 
 %changelog
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2:7.70-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Thu Apr 19 2018 Pavel Zhukov <pzhukov@redhat.com> - 2:7.70-2
 - Do not build zenmap and ndiff because of python2 deprecation
 
