@@ -219,8 +219,8 @@ popd
 %if %{with_frontend}
 %files ndiff
 %{_bindir}/ndiff
-%{python_sitelib}/ndiff.py
-%{python_sitelib}/ndiff.py?
+%{python2_sitelib}/ndiff.py
+%{python2_sitelib}/ndiff.py?
 %{_mandir}/man1/ndiff.1.gz
 
 %files frontend -f zenmap.lang
@@ -228,8 +228,8 @@ popd
 %{_bindir}/zenmap
 %{_bindir}/nmapfe
 %{_bindir}/xnmap
-%{python_sitelib}/radialnet
-%{python_sitelib}/zenmap*
+%{python2_sitelib}/radialnet
+%{python2_sitelib}/zenmap*
 %{_datadir}/applications/nmap-zenmap.desktop
 %{_datadir}/icons/hicolor/256x256/apps/*
 %{_datadir}/zenmap
