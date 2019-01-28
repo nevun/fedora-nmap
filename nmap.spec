@@ -17,7 +17,6 @@ Release: 4%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
-Group: Applications/System
 Requires: %{name}-ncat = %{epoch}:%{version}-%{release}
 Source0: http://nmap.org/dist/%{name}-%{version}%{?prerelease}.tar.bz2
 %if %{with_frontend}
@@ -66,7 +65,6 @@ analysis tool (nping).
 %if %{with_frontend}
 %package frontend
 Summary: The GTK+ front end for nmap
-Group: Applications/System
 Requires: nmap = %{epoch}:%{version} gtk2 python2 >= 2.5 pygtk2 usermode
 Requires: nmap-ndiff = %{epoch}:%{version}
 BuildRequires: python2-devel pygtk2-devel libpng-devel
@@ -78,7 +76,6 @@ be installed before installing nmap front end.
 
 %package ndiff
 Summary: Ndiff is a tool to aid in the comparison of Nmap scans
-Group:   Applications/System
 BuildRequires: python2 >= 2.5
 Requires: nmap = %{epoch}:%{version}
 BuildArch: noarch
@@ -88,7 +85,6 @@ BuildArch: noarch
 %endif
 
 %package ncat
-Group:   Applications/System
 Summary: Nmap's Netcat replacement
 Obsoletes: nc < 1.109.20120711-2
 Obsoletes: nc6 < 1.00-22
