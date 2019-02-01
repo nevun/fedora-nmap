@@ -13,7 +13,7 @@ Name: nmap
 Epoch: 2
 Version: 7.70
 #global prerelease TEST5
-Release: 4%{?dist}
+Release: 5%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -240,6 +240,9 @@ popd
 %endif
 
 %changelog
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2:7.70-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Mon Sep 10 2018 Pavel Zhukov <pzhukov@redhat.com> - 2:7.70-4
 - Obsolete frontend packages in f29+ (#1626804)
 
