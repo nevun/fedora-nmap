@@ -35,6 +35,8 @@ Patch2: nmap-4.52-noms.patch
 Patch5: ncat_reg_stdin.diff
 Patch6: nmap-6.25-displayerror.patch
 
+Patch7: nmap-ipv6_literal_proxy.patch
+
 URL: http://nmap.org/
 BuildRequires: gcc-c++
 BuildRequires: openssl-devel, gtk2-devel, lua-devel, libpcap-devel, pcre-devel
@@ -107,6 +109,7 @@ uses.
 %patch2 -p1 -b .noms
 %patch5 -p1 -b .ncat_reg_stdin
 %patch6 -p1 -b .displayerror
+%patch7 -p1 -b .ipv6-literal
 
 #be sure we're not using tarballed copies of some libraries
 #rm -rf liblua libpcap libpcre macosx mswin32 ###TODO###
@@ -240,6 +243,9 @@ popd
 %endif
 
 %changelog
+* Tue Feb  5 2019 Pavel Zhukov <pzhukov@redhat.com> - 2:7.70-5
+- Fix ipv6 literals parsing in proxy connection
+
 * Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2:7.70-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
