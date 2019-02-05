@@ -13,7 +13,7 @@ Name: nmap
 Epoch: 2
 Version: 7.70
 #global prerelease TEST5
-Release: 5%{?dist}
+Release: 6%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -243,7 +243,7 @@ popd
 %endif
 
 %changelog
-* Tue Feb  5 2019 Pavel Zhukov <pzhukov@redhat.com> - 2:7.70-5
+* Tue Feb  5 2019 Pavel Zhukov <pzhukov@redhat.com> - 2:7.70-6
 - Fix ipv6 literals parsing in proxy connection
 
 * Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2:7.70-5
