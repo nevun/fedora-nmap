@@ -13,7 +13,7 @@ Name: nmap
 Epoch: 2
 Version: 7.70
 #global prerelease TEST5
-Release: 6%{?dist}
+Release: 7%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -36,6 +36,7 @@ Patch5: ncat_reg_stdin.diff
 Patch6: nmap-6.25-displayerror.patch
 
 Patch7: nmap-ipv6_literal_proxy.patch
+Patch8: nmap-ssh_nse_crash.patch
 
 URL: http://nmap.org/
 BuildRequires: gcc-c++
@@ -110,6 +111,7 @@ uses.
 %patch5 -p1 -b .ncat_reg_stdin
 %patch6 -p1 -b .displayerror
 %patch7 -p1 -b .ipv6-literal
+%patch8 -p1 -b .nse-ssh-auth
 
 #be sure we're not using tarballed copies of some libraries
 #rm -rf liblua libpcap libpcre macosx mswin32 ###TODO###
@@ -243,6 +245,9 @@ popd
 %endif
 
 %changelog
+* Thu May  2 2019  Pavel Zhukov <pzhukov@redhat.com> - 2:7.70-7
+- Fix double free when ssh connections fails
+
 * Tue Feb  5 2019 Pavel Zhukov <pzhukov@redhat.com> - 2:7.70-6
 - Fix ipv6 literals parsing in proxy connection
 
