@@ -13,7 +13,7 @@ Name: nmap
 Epoch: 2
 Version: 7.70
 #global prerelease TEST5
-Release: 7%{?dist}
+Release: 8%{?dist}
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
@@ -245,6 +245,9 @@ popd
 %endif
 
 %changelog
+* Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2:7.70-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Thu May  2 2019  Pavel Zhukov <pzhukov@redhat.com> - 2:7.70-7
 - Fix double free when ssh connections fails
 
