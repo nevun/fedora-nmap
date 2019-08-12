@@ -2,28 +2,19 @@
 #supports sctp (grep sctp /usr/include/dnet.h)
 
 %global _hardened_build 1
-%if 0%{?fedora} && 0%{?fedora}  <= 28
-%global with_frontend 1
-%else
-%global with_frontend 0
-%endif
 
-Summary: Network exploration tool and security scanner
 Name: nmap
 Epoch: 2
-Version: 7.70
+Version: 7.80
 #global prerelease TEST5
-Release: 8%{?dist}
+Release: 1%{?dist}
+Summary: Network exploration tool and security scanner
+URL: http://nmap.org/
 # Uses combination of licenses based on GPL license, but with extra modification
 # so it got its own license tag rhbz#1055861
 License: Nmap
-Requires: %{name}-ncat = %{epoch}:%{version}-%{release}
+
 Source0: http://nmap.org/dist/%{name}-%{version}%{?prerelease}.tar.bz2
-%if %{with_frontend}
-Source1: zenmap.desktop
-Source2: zenmap-root.pamd
-Source3: zenmap.appdata.xml
-%endif
 
 #prevent possible race condition for shtool, rhbz#158996
 Patch1: nmap-4.03-mktemp.patch
@@ -32,24 +23,23 @@ Patch1: nmap-4.03-mktemp.patch
 Patch2: nmap-4.52-noms.patch
 
 # upstream provided patch for rhbz#845005, not yet in upstream repository
-Patch5: ncat_reg_stdin.diff
-Patch6: nmap-6.25-displayerror.patch
+Patch3: ncat_reg_stdin.diff
+Patch4: nmap-6.25-displayerror.patch
 
-Patch7: nmap-ipv6_literal_proxy.patch
-Patch8: nmap-ssh_nse_crash.patch
-
-URL: http://nmap.org/
+BuildRequires: automake
+BuildRequires: autoconf
 BuildRequires: gcc-c++
-BuildRequires: openssl-devel, gtk2-devel, lua-devel, libpcap-devel, pcre-devel
-BuildRequires: desktop-file-utils, dos2unix
-BuildRequires: libtool, automake, autoconf, gettext-devel
+BuildRequires: gettext-devel
+BuildRequires: libpcap-devel
 BuildRequires: libssh2-devel
+BuildRequires: libtool
+BuildRequires: lua-devel
+BuildRequires: openssl-devel
+BuildRequires: pcre-devel
+Requires: %{name}-ncat = %{epoch}:%{version}-%{release}
 
-%if ! %{with_frontend}
 Obsoletes: nmap-frontend
 Obsoletes: nmap-ndiff
-%endif
-
 
 %define pixmap_srcdir zenmap/share/pixmaps
 
@@ -65,33 +55,10 @@ data transfer, redirection, and debugging tool (netcat utility ncat), a utility
 for comparing scan results (ndiff), and a packet generation and response
 analysis tool (nping). 
 
-%if %{with_frontend}
-%package frontend
-Summary: The GTK+ front end for nmap
-Requires: nmap = %{epoch}:%{version} gtk2 python2 >= 2.5 pygtk2 usermode
-Requires: nmap-ndiff = %{epoch}:%{version}
-BuildRequires: python2-devel pygtk2-devel libpng-devel
-BuildArch: noarch
-
-%description frontend
-This package includes zenmap, a GTK+ front end for nmap. The nmap package must
-be installed before installing nmap front end.
-
-%package ndiff
-Summary: Ndiff is a tool to aid in the comparison of Nmap scans
-BuildRequires: python2 >= 2.5
-Requires: nmap = %{epoch}:%{version}
-BuildArch: noarch
-
-%description ndiff
-%{summary}
-%endif
-
 %package ncat
 Summary: Nmap's Netcat replacement
-Obsoletes: nc < 1.109.20120711-2
 Obsoletes: nc6 < 1.00-22
-Provides: nc nc6
+Provides: nc6
 
 %description ncat
 Ncat is a feature packed networking utility which will read and
@@ -103,48 +70,23 @@ but provides the user with a virtually limitless number of potential
 uses.
 
 
-
 %prep
-%setup -q -n %{name}-%{version}%{?prerelease}
-%patch1 -p1 -b .mktemp
-%patch2 -p1 -b .noms
-%patch5 -p1 -b .ncat_reg_stdin
-%patch6 -p1 -b .displayerror
-%patch7 -p1 -b .ipv6-literal
-%patch8 -p1 -b .nse-ssh-auth
+%autosetup -p1
 
 #be sure we're not using tarballed copies of some libraries
 #rm -rf liblua libpcap libpcre macosx mswin32 ###TODO###
 
 rm -rf libpcap libpcre macosx mswin32 libssh2 libz
 
-# for aarch64 support, not needed with autotools 2.69+
-for f in acinclude.m4 configure.ac nping/configure.ac
-do
-  sed -i -e 's/\(AC_DEFINE([^,)]*\))/\1, 1, [Description])/' -e 's/\(AC_DEFINE([^,]*,[^,)]*\))/\1, [Description])/' $f
-done
-autoreconf -I . -fiv --no-recursive
-cd nping; autoreconf -I .. -fiv --no-recursive; cd ..
-
-%if %{with_frontend}
-#fix locale dir
-mv zenmap/share/zenmap/locale zenmap/share
-sed -i -e "s|^locale_dir =.*$|locale_dir = os.path.join('share','locale')|" \
- -e 's|join(self.install_data, data_dir)|join(self.install_data, "share")|' zenmap/setup.py
-sed -i 's|^LOCALE_DIR = .*|LOCALE_DIR = join(prefix, "share", "locale")|' zenmap/zenmapCore/Paths.py
-%endif
-
 %build
 export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 export CXXFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 ### TODO ## configure  --with-libpcap=/usr ###TODO###
 %configure  --with-libpcap=yes --with-liblua=included \
-%if ! %{with_frontend}
-  --without-zenmap \
-  --without-ndiff \
-%endif
+  --without-zenmap --without-ndiff \
   --enable-dbus --with-libssh2=yes 
-make %{?_smp_mflags}
+
+%make_build
 
 #fix man page (rhbz#813734)
 sed -i 's/-md/-mf/' nping/docs/nping.1
@@ -161,51 +103,10 @@ rmdir %{buildroot}%{_datadir}/ncat
 ln -s ncat.1.gz %{buildroot}%{_mandir}/man1/nc.1.gz
 ln -s ncat %{buildroot}%{_bindir}/nc
 
-%if %{with_frontend}
-rm -f %{buildroot}%{_bindir}/uninstall_zenmap
-#do not include uninstall script
-rm -f %{buildroot}%{_bindir}/uninstall_ndiff
-
-rm -f %{buildroot}%{_datadir}/applications/zenmap*.desktop
-mkdir -p %{buildroot}%{_sysconfdir}/pam.d
-install -m 0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pam.d/zenmap-root
-
-cp docs/zenmap.1 %{buildroot}%{_mandir}/man1/
-gzip %{buildroot}%{_mandir}/man1/* || :
-pushd %{buildroot}%{_mandir}/man1
-ln -s zenmap.1.gz nmapfe.1.gz
-ln -s zenmap.1.gz xnmap.1.gz
-popd
-
-
-desktop-file-install --vendor nmap \
-    --dir %{buildroot}%{_datadir}/applications \
-    --add-category X-Red-Hat-Base \
-    %{SOURCE1};
-
-mkdir -p  %{buildroot}/%{_datadir}/metainfo/
-install -p -m 0644 %SOURCE3 %{buildroot}/%{_datadir}/metainfo/
-
-#for .desktop and app icon
-mkdir -p %{buildroot}%{_datadir}/icons/hicolor/256x256/apps
-ln -s ../../../../zenmap/pixmaps/zenmap.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps
-
-# fix end-of-line
-pushd %{buildroot}
-for fe in ./%{python_sitelib}/zenmapCore/Paths.py
-do
-  dos2unix <$fe >$fe.new
-  touch -r $fe $fe.new
-  mv -f $fe.new $fe
-done
-popd
-%find_lang zenmap
-%endif
-
 %find_lang nmap --with-man
 
 %files -f nmap.lang
-%doc COPYING*
+%license COPYING*
 %doc docs/README
 %doc docs/nmap.usage.txt
 %{_bindir}/nmap
@@ -215,36 +116,19 @@ popd
 %{_datadir}/nmap
 
 %files ncat 
-%doc COPYING ncat/docs/AUTHORS ncat/docs/README ncat/docs/THANKS ncat/docs/examples
+%license COPYING
+%doc ncat/docs/AUTHORS ncat/docs/README ncat/docs/THANKS ncat/docs/examples
 %{_bindir}/nc
 %{_bindir}/ncat
 %{_mandir}/man1/nc.1.gz
 %{_mandir}/man1/ncat.1.gz
 
-%if %{with_frontend}
-%files ndiff
-%{_bindir}/ndiff
-%{python2_sitelib}/ndiff.py
-%{python2_sitelib}/ndiff.py?
-%{_mandir}/man1/ndiff.1.gz
-
-%files frontend -f zenmap.lang
-%config(noreplace) %{_sysconfdir}/pam.d/zenmap-root
-%{_bindir}/zenmap
-%{_bindir}/nmapfe
-%{_bindir}/xnmap
-%{python2_sitelib}/radialnet
-%{python2_sitelib}/zenmap*
-%{_datadir}/applications/nmap-zenmap.desktop
-%{_datadir}/icons/hicolor/256x256/apps/*
-%{_datadir}/zenmap
-%{_mandir}/man1/zenmap.1.gz
-%{_mandir}/man1/nmapfe.1.gz
-%{_mandir}/man1/xnmap.1.gz
-%{_datadir}/metainfo/zenmap.appdata.xml
-%endif
-
 %changelog
+* Mon Aug 12 2019 Peter Robinson <pbrobinson@fedoraproject.org> 2:7.80-1
+- Update to 7.80
+- Drop features conditionals from old releases
+- Use %%license, package cleanups
+
 * Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2:7.70-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
