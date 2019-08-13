@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 2
 Version: 7.80
 #global prerelease TEST5
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Network exploration tool and security scanner
 URL: http://nmap.org/
 # Uses combination of licenses based on GPL license, but with extra modification
@@ -57,8 +57,9 @@ analysis tool (nping).
 
 %package ncat
 Summary: Nmap's Netcat replacement
+Obsoletes: nc < 1.109.20120711-2
 Obsoletes: nc6 < 1.00-22
-Provides: nc6
+Provides: nc nc6
 
 %description ncat
 Ncat is a feature packed networking utility which will read and
@@ -124,6 +125,9 @@ ln -s ncat %{buildroot}%{_bindir}/nc
 %{_mandir}/man1/ncat.1.gz
 
 %changelog
+* Tue Aug 13 2019 Peter Robinson <pbrobinson@fedoraproject.org> 2:7.80-2
+- Re-provide nc, clearly 7 years isn't enough
+
 * Mon Aug 12 2019 Peter Robinson <pbrobinson@fedoraproject.org> 2:7.80-1
 - Update to 7.80
 - Drop features conditionals from old releases
