@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 2
 Version: 7.80
 #global prerelease TEST5
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Network exploration tool and security scanner
 URL: http://nmap.org/
 # Uses combination of licenses based on GPL license, but with extra modification
@@ -125,6 +125,9 @@ ln -s ncat %{buildroot}%{_bindir}/nc
 %{_mandir}/man1/ncat.1.gz
 
 %changelog
+* Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2:7.80-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Tue Aug 13 2019 Peter Robinson <pbrobinson@fedoraproject.org> 2:7.80-2
 - Re-provide nc, clearly 7 years isn't enough
 
