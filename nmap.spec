@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 2
 Version: 7.80
 #global prerelease TEST5
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: Network exploration tool and security scanner
 URL: http://nmap.org/
 # Uses combination of licenses based on GPL license, but with extra modification
@@ -25,6 +25,8 @@ Patch2: nmap-4.52-noms.patch
 # upstream provided patch for rhbz#845005, not yet in upstream repository
 Patch3: ncat_reg_stdin.diff
 Patch4: nmap-6.25-displayerror.patch
+# https://github.com/nmap/nmap/commit/33f421fd6e68fcb8ed50071661d9704717c81b2b.patch
+Patch5: nmap-unsolicited_arp_assert.patch
 
 BuildRequires: automake
 BuildRequires: autoconf
@@ -125,6 +127,9 @@ ln -s ncat %{buildroot}%{_bindir}/nc
 %{_mandir}/man1/ncat.1.gz
 
 %changelog
+* Tue May 19 2020 Pavel Zhukov <pzhukov@redhat.com> - 2:7.80-4
+- Do not assert on unsolicited ARP response (#1836989)
+
 * Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2:7.80-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
