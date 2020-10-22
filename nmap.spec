@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 2
 Version: 7.91
 #global prerelease TEST5
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Network exploration tool and security scanner
 URL: http://nmap.org/
 # Uses combination of licenses based on GPL license, but with extra modification
@@ -25,6 +25,9 @@ Patch2: nmap-4.52-noms.patch
 # upstream provided patch for rhbz#845005, not yet in upstream repository
 Patch3: ncat_reg_stdin.diff
 Patch4: nmap-6.25-displayerror.patch
+
+# Upstream patch to prevent crash with UNIX domain sockets.
+Patch5: ncat-fix-unix-domain-socket-crash.patch
 
 BuildRequires: automake
 BuildRequires: autoconf
@@ -133,6 +136,10 @@ ln -s ncat %{buildroot}%{_bindir}/nc
 %{_mandir}/man1/ncat.1.gz
 
 %changelog
+* Thu Oct 22 2020 Sergio Correia <scorreia@redhat.com>  2:7.91-2
+- Backport fix for UNIX domain socket crash
+  Upstream: https://github.com/nmap/nmap/commit/f6b40614e4a8131394792d590965f8af3c635323
+
 * Thu Aug 20 2020 Pavel Zhukov <pzhukov@redhat.com> - 2:7.80-6
 - Drop libssh from eln 
 
