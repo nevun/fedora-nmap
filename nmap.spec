@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 2
 Version: 7.91
 #global prerelease TEST5
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Network exploration tool and security scanner
 URL: http://nmap.org/
 # Uses combination of licenses based on GPL license, but with extra modification
@@ -15,6 +15,8 @@ URL: http://nmap.org/
 License: Nmap
 
 Source0: http://nmap.org/dist/%{name}-%{version}%{?prerelease}.tar.bz2
+Source1: https://nmap.org/dist/sigs/%{name}-%{version}.tar.bz2.asc
+Source2: https://svn.nmap.org/nmap/docs/nmap_gpgkeys.txt
 
 #prevent possible race condition for shtool, rhbz#158996
 Patch1: nmap-4.03-mktemp.patch
@@ -42,6 +44,7 @@ BuildRequires: lua-devel
 BuildRequires: openssl-devel
 BuildRequires: pcre-devel
 BuildRequires: zlib-devel
+BuildRequires: gnupg2
 Requires: %{name}-ncat = %{epoch}:%{version}-%{release}
 
 Obsoletes: nmap-frontend
@@ -78,6 +81,7 @@ uses.
 
 
 %prep
+%{gpgverify} --keyring=%{SOURCE2} --signature='%{SOURCE1}' --data='%{SOURCE0}'
 %autosetup -p1
 
 #be sure we're not using tarballed copies of some libraries
@@ -136,6 +140,9 @@ ln -s ncat %{buildroot}%{_bindir}/nc
 %{_mandir}/man1/ncat.1.gz
 
 %changelog
+* Thu Oct 29 2020 Pavel Zhukov <pzhukov@redhat.com> - 2:7.91-3
+- Add source verification
+
 * Thu Oct 22 2020 Sergio Correia <scorreia@redhat.com>  2:7.91-2
 - Backport fix for UNIX domain socket crash
   Upstream: https://github.com/nmap/nmap/commit/f6b40614e4a8131394792d590965f8af3c635323
