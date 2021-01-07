@@ -31,6 +31,7 @@ Patch4: nmap-6.25-displayerror.patch
 # Upstream patch to prevent crash with UNIX domain sockets.
 Patch5: ncat-fix-unix-domain-socket-crash.patch
 
+BuildRequires: make
 BuildRequires: automake
 BuildRequires: autoconf
 BuildRequires: gcc-c++
