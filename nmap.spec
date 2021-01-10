@@ -4,10 +4,10 @@
 %global _hardened_build 1
 
 Name: nmap
-Epoch: 2
-Version: 7.91
+Epoch: 3
+Version: 7.80
 #global prerelease TEST5
-Release: 3%{?dist}
+Release: 6%{?dist}
 Summary: Network exploration tool and security scanner
 URL: http://nmap.org/
 # Uses combination of licenses based on GPL license, but with extra modification
@@ -18,6 +18,7 @@ Source0: http://nmap.org/dist/%{name}-%{version}%{?prerelease}.tar.bz2
 Source1: https://nmap.org/dist/sigs/%{name}-%{version}.tar.bz2.asc
 Source2: https://svn.nmap.org/nmap/docs/nmap_gpgkeys.txt
 
+
 #prevent possible race condition for shtool, rhbz#158996
 Patch1: nmap-4.03-mktemp.patch
 
@@ -27,12 +28,11 @@ Patch2: nmap-4.52-noms.patch
 # upstream provided patch for rhbz#845005, not yet in upstream repository
 Patch3: ncat_reg_stdin.diff
 Patch4: nmap-6.25-displayerror.patch
+# https://github.com/nmap/nmap/commit/33f421fd6e68fcb8ed50071661d9704717c81b2b.patch
+Patch5: nmap-unsolicited_arp_assert.patch
 
-# Upstream patch to prevent crash with UNIX domain sockets.
-Patch5: ncat-fix-unix-domain-socket-crash.patch
 
-BuildRequires: make
-BuildRequires: automake
+BuildRequires: automake make
 BuildRequires: autoconf
 BuildRequires: gcc-c++
 BuildRequires: gettext-devel
@@ -85,6 +85,7 @@ uses.
 %{gpgverify} --keyring=%{SOURCE2} --signature='%{SOURCE1}' --data='%{SOURCE0}'
 %autosetup -p1
 
+
 #be sure we're not using tarballed copies of some libraries
 #rm -rf liblua libpcap libpcre macosx mswin32 ###TODO###
 
@@ -123,7 +124,7 @@ ln -s ncat %{buildroot}%{_bindir}/nc
 %find_lang nmap --with-man
 
 %files -f nmap.lang
-%license LICENSE
+%license COPYING*
 %doc docs/README
 %doc docs/nmap.usage.txt
 %{_bindir}/nmap
@@ -133,7 +134,7 @@ ln -s ncat %{buildroot}%{_bindir}/nc
 %{_datadir}/nmap
 
 %files ncat 
-%license LICENSE
+%license COPYING
 %doc ncat/docs/AUTHORS ncat/docs/README ncat/docs/THANKS ncat/docs/examples
 %{_bindir}/nc
 %{_bindir}/ncat
@@ -141,12 +142,8 @@ ln -s ncat %{buildroot}%{_bindir}/nc
 %{_mandir}/man1/ncat.1.gz
 
 %changelog
-* Thu Oct 29 2020 Pavel Zhukov <pzhukov@redhat.com> - 2:7.91-3
-- Add source verification
-
-* Thu Oct 22 2020 Sergio Correia <scorreia@redhat.com>  2:7.91-2
-- Backport fix for UNIX domain socket crash
-  Upstream: https://github.com/nmap/nmap/commit/f6b40614e4a8131394792d590965f8af3c635323
+* Sun Jan 10 2021  Pavel Zhukov <pzhukov@redhat.com> - 3:7.80-7
+- Drop nmap >= 7.90
 
 * Thu Aug 20 2020 Pavel Zhukov <pzhukov@redhat.com> - 2:7.80-6
 - Drop libssh from eln 
