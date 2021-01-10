@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 3
 Version: 7.80
 #global prerelease TEST5
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: Network exploration tool and security scanner
 URL: http://nmap.org/
 # Uses combination of licenses based on GPL license, but with extra modification
