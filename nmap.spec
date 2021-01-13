@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 3
 Version: 7.80
 #global prerelease TEST5
-Release: 7%{?dist}
+Release: 8%{?dist}
 Summary: Network exploration tool and security scanner
 URL: http://nmap.org/
 # Uses combination of licenses based on GPL license, but with extra modification
@@ -30,6 +30,7 @@ Patch3: ncat_reg_stdin.diff
 Patch4: nmap-6.25-displayerror.patch
 # https://github.com/nmap/nmap/commit/33f421fd6e68fcb8ed50071661d9704717c81b2b.patch
 Patch5: nmap-unsolicited_arp_assert.patch
+Patch6: nmap-safe_fd_functions.patch
 
 
 BuildRequires: automake make
@@ -142,7 +143,10 @@ ln -s ncat %{buildroot}%{_bindir}/nc
 %{_mandir}/man1/ncat.1.gz
 
 %changelog
-* Sun Jan 10 2021  Pavel Zhukov <pzhukov@redhat.com> - 3:7.80-7
+* Wed Jan 13 2021 Pavel Zhukov  <pzhukov@redhat.com> - 3:7.80-8
+- Replace FD_ functions with safe implementation (#1914734)
+
+* Sun Jan 10 2021 Pavel Zhukov <pzhukov@redhat.com> - 3:7.80-7
 - Drop nmap >= 7.90
 
 * Thu Aug 20 2020 Pavel Zhukov <pzhukov@redhat.com> - 2:7.80-6
