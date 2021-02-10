@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 3
 Version: 7.80
 #global prerelease TEST5
-Release: 9%{?dist}
+Release: 10%{?dist}
 Summary: Network exploration tool and security scanner
 URL: http://nmap.org/
 # Uses combination of licenses based on GPL license, but with extra modification
@@ -31,6 +31,8 @@ Patch4: nmap-6.25-displayerror.patch
 # https://github.com/nmap/nmap/commit/33f421fd6e68fcb8ed50071661d9704717c81b2b.patch
 Patch5: nmap-unsolicited_arp_assert.patch
 Patch6: nmap-safe_fd_functions.patch
+# https://github.com/nmap/nmap/pull/2247
+Patch7: nmap_resolve_config.patch
 
 
 BuildRequires: automake make
@@ -143,6 +145,9 @@ ln -s ncat %{buildroot}%{_bindir}/nc
 %{_mandir}/man1/ncat.1.gz
 
 %changelog
+* Wed Jan 13 2021 Pavel Zhukov  <pzhukov@redhat.com> - 3:7.80-10
+- Do not listen on ipv6 if it's disabled
+
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 3:7.80-9
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
