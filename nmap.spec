@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 3
 Version: 7.80
 #global prerelease TEST5
-Release: 10%{?dist}
+Release: 11%{?dist}
 Summary: Network exploration tool and security scanner
 URL: http://nmap.org/
 # Uses combination of licenses based on GPL license, but with extra modification
@@ -70,6 +70,8 @@ analysis tool (nping).
 
 %package ncat
 Summary: Nmap's Netcat replacement
+Requires(post): %{_sbindir}/alternatives
+Requires(preun): %{_sbindir}/alternatives
 Obsoletes: nc < 1.109.20120711-2
 Obsoletes: nc6 < 1.00-22
 Provides: nc nc6
@@ -120,11 +122,20 @@ make DESTDIR=%{buildroot} STRIP=true install
 rm -f %{buildroot}%{_datadir}/ncat/ca-bundle.crt
 rmdir %{buildroot}%{_datadir}/ncat
 
-#we provide 'nc' replacement
-ln -s ncat.1.gz %{buildroot}%{_mandir}/man1/nc.1.gz
-ln -s ncat %{buildroot}%{_bindir}/nc
+#we provide 'nc' replacement (#1653119)
+touch %{buildroot}%{_mandir}/man1/nc.1.gz
+touch %{buildroot}%{_bindir}/nc
 
 %find_lang nmap --with-man
+
+%post ncat
+%{_sbindir}/alternatives --install %{_bindir}/nc nc %{_bindir}/ncat 10 \
+  --slave %{_mandir}/man1/nc.1.gz nc-man %{_mandir}/man1/ncat.1.gz
+
+%preun ncat
+if [ $1 -eq 0 ]; then
+  %{_sbindir}/alternatives --remove nc %{_bindir}/ncat
+fi
 
 %files -f nmap.lang
 %license COPYING*
@@ -139,13 +150,16 @@ ln -s ncat %{buildroot}%{_bindir}/nc
 %files ncat 
 %license COPYING
 %doc ncat/docs/AUTHORS ncat/docs/README ncat/docs/THANKS ncat/docs/examples
-%{_bindir}/nc
+%ghost %{_bindir}/nc
 %{_bindir}/ncat
-%{_mandir}/man1/nc.1.gz
+%ghost %{_mandir}/man1/nc.1.gz
 %{_mandir}/man1/ncat.1.gz
 
 %changelog
-* Wed Jan 13 2021 Pavel Zhukov  <pzhukov@redhat.com> - 3:7.80-10
+* Sun Mar 07 2021 Robert Scheck <robert@fedoraproject.org> - 3:7.80-11
+- Manage nc symlink using alternatives (#1653119)
+
+* Wed Feb 10 2021 Pavel Zhukov  <pzhukov@redhat.com> - 3:7.80-10
 - Do not listen on ipv6 if it's disabled
 
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 3:7.80-9
