@@ -5,9 +5,9 @@
 
 Name: nmap
 Epoch: 3
-Version: 7.80
+Version: 7.91
 #global prerelease TEST5
-Release: 11%{?dist}
+Release: 1%{?dist}
 Summary: Network exploration tool and security scanner
 URL: http://nmap.org/
 # Uses combination of licenses based on GPL license, but with extra modification
@@ -28,11 +28,10 @@ Patch2: nmap-4.52-noms.patch
 # upstream provided patch for rhbz#845005, not yet in upstream repository
 Patch3: ncat_reg_stdin.diff
 Patch4: nmap-6.25-displayerror.patch
-# https://github.com/nmap/nmap/commit/33f421fd6e68fcb8ed50071661d9704717c81b2b.patch
-Patch5: nmap-unsolicited_arp_assert.patch
-Patch6: nmap-safe_fd_functions.patch
 # https://github.com/nmap/nmap/pull/2247
 Patch7: nmap_resolve_config.patch
+## https://github.com/nmap/nmap/commit/28bfe0dfd26dbc4e9917db9ad5457ab496769d24.patch
+Patch9: nmap-safe_fd_functions.patch
 
 
 BuildRequires: automake make
@@ -138,7 +137,7 @@ if [ $1 -eq 0 ]; then
 fi
 
 %files -f nmap.lang
-%license COPYING*
+%license LICENSE
 %doc docs/README
 %doc docs/nmap.usage.txt
 %{_bindir}/nmap
@@ -148,7 +147,7 @@ fi
 %{_datadir}/nmap
 
 %files ncat 
-%license COPYING
+%license LICENSE
 %doc ncat/docs/AUTHORS ncat/docs/README ncat/docs/THANKS ncat/docs/examples
 %ghost %{_bindir}/nc
 %{_bindir}/ncat
@@ -156,6 +155,9 @@ fi
 %{_mandir}/man1/ncat.1.gz
 
 %changelog
+* Thu Apr  8 2021 Pavel Zhukov <pzhukov@redhat.com> - 3:7.91-1
+- Bring 7.91 back
+
 * Sun Mar 07 2021 Robert Scheck <robert@fedoraproject.org> - 3:7.80-11
 - Manage nc symlink using alternatives (#1653119)
 
