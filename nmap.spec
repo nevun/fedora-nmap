@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 3
 Version: 7.91
 #global prerelease TEST5
-Release: 1%{?dist}
+Release: 7%{?dist}
 Summary: Network exploration tool and security scanner
 URL: http://nmap.org/
 # Uses combination of licenses based on GPL license, but with extra modification
@@ -33,6 +33,8 @@ Patch7: nmap_resolve_config.patch
 ## https://github.com/nmap/nmap/commit/28bfe0dfd26dbc4e9917db9ad5457ab496769d24.patch
 Patch9: nmap-safe_fd_functions.patch
 
+## https://github.com/nmap/nmap/commit/f6b40614e4a8131394792d590965f8af3c635323.patch
+Patch10: nmap-unix_crash.patch
 
 BuildRequires: automake make
 BuildRequires: autoconf
@@ -155,6 +157,12 @@ fi
 %{_mandir}/man1/ncat.1.gz
 
 %changelog
+* Wed May  5 2021 Pavel Zhukov <pzhukov@redhat.com> - 3:7.91-7
+- Fix crash with unix sockets
+
+* Fri Apr 16 2021 Pavel Zhukov <pzhukov@redhat.com> - 3:7.91-6
+- Bumping release because brew doesn't work with Epoch
+
 * Thu Apr  8 2021 Pavel Zhukov <pzhukov@redhat.com> - 3:7.91-1
 - Bring 7.91 back
 
