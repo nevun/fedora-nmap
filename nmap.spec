@@ -5,9 +5,9 @@
 
 Name: nmap
 Epoch: 3
-Version: 7.91
+Version: 7.92
 #global prerelease TEST5
-Release: 10%{?dist}
+Release: 1%{?dist}
 Summary: Network exploration tool and security scanner
 URL: http://nmap.org/
 # Uses combination of licenses based on GPL license, but with extra modification
@@ -30,11 +30,7 @@ Patch3: ncat_reg_stdin.diff
 Patch4: nmap-6.25-displayerror.patch
 # https://github.com/nmap/nmap/pull/2247
 Patch7: nmap_resolve_config.patch
-## https://github.com/nmap/nmap/commit/28bfe0dfd26dbc4e9917db9ad5457ab496769d24.patch
-Patch9: nmap-safe_fd_functions.patch
 
-## https://github.com/nmap/nmap/commit/f6b40614e4a8131394792d590965f8af3c635323.patch
-Patch10: nmap-unix_crash.patch
 
 BuildRequires: automake make
 BuildRequires: autoconf
@@ -157,6 +153,9 @@ fi
 %{_mandir}/man1/ncat.1.gz
 
 %changelog
+* Tue Feb 22 2022 Martin Osvald <mosvald@redhat.com> - 3:7.92-1
+- New version 7.92
+
 * Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 3:7.91-10
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
