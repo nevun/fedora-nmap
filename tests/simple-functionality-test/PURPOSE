@@ -1,5 +1,0 @@
-PURPOSE of /CoreOS/nmap/Sanity/simple-functionality-test
-Description: Simple functionality test, local port scanning.
-Author: Karel Srot <ksrot@redhat.com>
-
-sanity testing local port scanning
