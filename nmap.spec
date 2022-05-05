@@ -7,7 +7,7 @@ Name: nmap
 Epoch: 3
 Version: 7.92
 #global prerelease TEST5
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Network exploration tool and security scanner
 URL: http://nmap.org/
 # Uses combination of licenses based on GPL license, but with extra modification
@@ -30,6 +30,7 @@ Patch3: ncat_reg_stdin.diff
 Patch4: nmap-6.25-displayerror.patch
 # https://github.com/nmap/nmap/pull/2247
 Patch7: nmap_resolve_config.patch
+Patch8: close-on-EOF.patch
 
 
 BuildRequires: automake make
@@ -153,6 +154,10 @@ fi
 %{_mandir}/man1/ncat.1.gz
 
 %changelog
+* Thu May 05 2022 Martin Osvald <mosvald@redhat.com> - 3:7.92-3
+- ncat: close on EOF by default, new --no-terminate option
+  for backward compatibility (#2082270)
+
 * Tue Feb 22 2022 Martin Osvald <mosvald@redhat.com> - 3:7.92-1
 - New version 7.92
 
