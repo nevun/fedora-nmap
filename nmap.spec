@@ -1,6 +1,6 @@
 Name: nmap
 Epoch: 3
-Version: 7.94
+Version: 7.95
 #global prerelease TEST5
 Release: %autorelease
 Summary: Network exploration tool and security scanner
@@ -23,9 +23,6 @@ Patch3: ncat_reg_stdin.diff
 #Patch4: nmap-6.25-displayerror.patch
 # https://github.com/nmap/nmap/pull/2247
 Patch7: nmap_resolve_config.patch
-# backport of upstream pcre2 migration, rhbz#2128336
-Patch8: nmap-pcre2.patch
-
 
 BuildRequires: automake make
 BuildRequires: autoconf
