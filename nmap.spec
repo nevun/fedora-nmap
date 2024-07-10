@@ -1,13 +1,13 @@
 Name: nmap
-Epoch: 3
-Version: 7.95
+Epoch: 4
+Version: 7.92
 #global prerelease TEST5
 Release: %autorelease
 Summary: Network exploration tool and security scanner
 URL: http://nmap.org/
-# TODO: Currently, the Nmap license is not allowed on Fedora:
-# https://gitlab.com/fedora/legal/fedora-license-data/-/issues/147
-License: LicenseRef-NPSL-0.94
+# https://lists.fedoraproject.org/archives/list/legal@lists.fedoraproject.org/thread/Q67UGCHSCKCLJOVOHSLYU4AERAHBS5YE/
+# https://gitlab.com/fedora/legal/fedora-license-data/-/issues/543
+License: LicenseRef-Nmap
 
 Source0: http://nmap.org/dist/%{name}-%{version}%{?prerelease}.tar.bz2
 Source1: https://nmap.org/dist/sigs/%{name}-%{version}.tar.bz2.asc
@@ -23,6 +23,8 @@ Patch3: ncat_reg_stdin.diff
 #Patch4: nmap-6.25-displayerror.patch
 # https://github.com/nmap/nmap/pull/2247
 Patch7: nmap_resolve_config.patch
+# backport of upstream pcre2 migration, rhbz#2128336
+Patch8: nmap-pcre2.patch
 
 BuildRequires: automake make
 BuildRequires: autoconf
