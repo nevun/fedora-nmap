@@ -25,6 +25,8 @@ Patch3: ncat_reg_stdin.diff
 Patch7: nmap_resolve_config.patch
 # backport of upstream pcre2 migration, rhbz#2128336
 Patch8: nmap-pcre2.patch
+# https://github.com/nmap/nmap/pull/2724
+Patch9: nmap-ems-ssl-enum-ciphers.patch
 
 BuildRequires: automake make
 BuildRequires: autoconf
