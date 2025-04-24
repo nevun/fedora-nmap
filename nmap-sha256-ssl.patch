@@ -1,0 +1,159 @@
+commit d6d5added474068ec3ae1a753919d19a257e8352
+Author: Gabriel Kihlman <gk@sysctl.se>
+Date:   Thu Apr 24 12:33:54 2025 +0200
+
+    ncat: use SHA-256 signatures for certificate with --ssl
+    
+    SHA1 is deprecated and for example Fedora have disabled support for it
+    in their bundled crypto libraries.
+    
+    Stock ncat on fedora:
+    
+    ```
+    $ nc -k -l --ssl
+    Ncat: Version 7.92 ( https://nmap.org/ncat )
+    Ncat: Generating a temporary 2048-bit RSA key. Use --ssl-key and --ssl-cert to use a permanent one.
+    Ncat: ssl_gen_cert(): error:03000098:digital envelope routines::invalid digest. QUITTING.
+    ```
+    
+    After changes:
+    ```
+    $ ./ncat -k -l --ssl
+    Ncat: Version 7.95SVN ( https://nmap.org/ncat )
+    Ncat: Generating a temporary 2048-bit RSA key. Use --ssl-key and --ssl-cert to use a permanent one.
+    Ncat: SHA-256 fingerprint: 973E 4230 6808 C380 FF3A 95B8 9C1C 0A08 88C4 B3C1 6BE3 FC2D CCA3 D0FC 2768 423B
+    Ncat: Listening on [::]:31337
+    Ncat: Listening on 0.0.0.0:31337
+    ```
+
+    corresponding upstream PR: https://github.com/nmap/nmap/pull/3081
+
+diff -ur nmap-7.92.orig/ncat/ncat_connect.c nmap-7.92/ncat/ncat_connect.c
+--- nmap-7.92.orig/ncat/ncat_connect.c	2021-03-16 03:34:35.000000000 +0100
++++ nmap-7.92/ncat/ncat_connect.c	2025-04-24 13:06:11.037200766 +0200
+@@ -126,7 +126,7 @@
+     /* Print the subject, issuer, and fingerprint depending on the verbosity
+        level. */
+     if ((!ok && o.verbose) || o.debug > 1) {
+-        char digest_buf[SHA1_STRING_LENGTH + 1];
++        char digest_buf[SHA256_STRING_LENGTH + 1];
+         char *fp;
+ 
+         loguser("Subject: ");
+@@ -136,9 +136,9 @@
+         X509_NAME_print_ex_fp(stderr, X509_get_issuer_name(cert), 0, XN_FLAG_COMPAT);
+         loguser_noprefix("\n");
+ 
+-        fp = ssl_cert_fp_str_sha1(cert, digest_buf, sizeof(digest_buf));
++        fp = ssl_cert_fp_str_sha256(cert, digest_buf, sizeof(digest_buf));
+         ncat_assert(fp == digest_buf);
+-        loguser("SHA-1 fingerprint: %s\n", digest_buf);
++        loguser("SHA-256 fingerprint: %s\n", digest_buf);
+     }
+ 
+     if (!ok && o.verbose) {
+@@ -231,7 +231,7 @@
+         if (nsock_iod_check_ssl(nsi)) {
+             X509 *cert;
+             X509_NAME *subject;
+-            char digest_buf[SHA1_STRING_LENGTH + 1];
++            char digest_buf[SHA256_STRING_LENGTH + 1];
+             char *fp;
+ 
+             loguser("SSL connection to %s:%d.", connect_report_peer_str,
+@@ -252,9 +252,9 @@
+ 
+             loguser_noprefix("\n");
+ 
+-            fp = ssl_cert_fp_str_sha1(cert, digest_buf, sizeof(digest_buf));
++            fp = ssl_cert_fp_str_sha256(cert, digest_buf, sizeof(digest_buf));
+             ncat_assert(fp == digest_buf);
+-            loguser("SHA-1 fingerprint: %s\n", digest_buf);
++            loguser("SHA-256 fingerprint: %s\n", digest_buf);
+         } else {
+ #if HAVE_SYS_UN_H
+             if (peer.sockaddr.sa_family == AF_UNIX)
+diff -ur nmap-7.92.orig/ncat/ncat_ssl.c nmap-7.92/ncat/ncat_ssl.c
+--- nmap-7.92.orig/ncat/ncat_ssl.c	2020-12-24 01:35:38.000000000 +0100
++++ nmap-7.92/ncat/ncat_ssl.c	2025-04-24 13:05:38.611648611 +0200
+@@ -140,7 +140,7 @@
+     if (o.sslcert == NULL && o.sslkey == NULL) {
+         X509 *cert;
+         EVP_PKEY *key;
+-        char digest_buf[SHA1_STRING_LENGTH + 1];
++        char digest_buf[SHA256_STRING_LENGTH + 1];
+ 
+         if (o.verbose)
+             loguser("Generating a temporary %d-bit RSA key. Use --ssl-key and --ssl-cert to use a permanent one.\n", DEFAULT_KEY_BITS);
+@@ -148,9 +148,9 @@
+             bye("ssl_gen_cert(): %s.", ERR_error_string(ERR_get_error(), NULL));
+         if (o.verbose) {
+             char *fp;
+-            fp = ssl_cert_fp_str_sha1(cert, digest_buf, sizeof(digest_buf));
++            fp = ssl_cert_fp_str_sha256(cert, digest_buf, sizeof(digest_buf));
+             ncat_assert(fp == digest_buf);
+-            loguser("SHA-1 fingerprint: %s\n", digest_buf);
++            loguser("SHA-256 fingerprint: %s\n", digest_buf);
+         }
+         if (SSL_CTX_use_certificate(sslctx, cert) != 1)
+             bye("SSL_CTX_use_certificate(): %s.", ERR_error_string(ERR_get_error(), NULL));
+@@ -550,7 +550,7 @@
+ #endif
+ 
+     /* Sign it. */
+-    if (X509_sign(*cert, *key, EVP_sha1()) == 0)
++    if (X509_sign(*cert, *key, EVP_sha256()) == 0)
+         goto err;
+ 
+     return 1;
+@@ -564,19 +564,19 @@
+     return 0;
+ }
+ 
+-/* Calculate a SHA-1 fingerprint of a certificate and format it as a
++/* Calculate a SHA-256 fingerprint of a certificate and format it as a
+    human-readable string. Returns strbuf or NULL on error. */
+-char *ssl_cert_fp_str_sha1(const X509 *cert, char *strbuf, size_t len)
++char *ssl_cert_fp_str_sha256(const X509 *cert, char *strbuf, size_t len)
+ {
+-    unsigned char binbuf[SHA1_BYTES];
++    unsigned char binbuf[SHA256_BYTES];
+     unsigned int n;
+     char *p;
+     unsigned int i;
+ 
+-    if (len < SHA1_STRING_LENGTH + 1)
++    if (len < SHA256_STRING_LENGTH + 1)
+         return NULL;
+     n = sizeof(binbuf);
+-    if (X509_digest(cert, EVP_sha1(), binbuf, &n) != 1)
++    if (X509_digest(cert, EVP_sha256(), binbuf, &n) != 1)
+         return NULL;
+ 
+     p = strbuf;
+diff -ur nmap-7.92.orig/ncat/ncat_ssl.h nmap-7.92/ncat/ncat_ssl.h
+--- nmap-7.92.orig/ncat/ncat_ssl.h	2020-10-06 01:00:30.000000000 +0200
++++ nmap-7.92/ncat/ncat_ssl.h	2025-04-24 13:05:38.611937428 +0200
+@@ -70,9 +70,9 @@
+ #define NCAT_CA_CERTS_FILE "ca-bundle.crt"
+ 
+ enum {
+-    SHA1_BYTES = 160 / 8,
+-    /* 40 bytes for hex digits and 9 bytes for ' '. */
+-    SHA1_STRING_LENGTH = SHA1_BYTES * 2 + (SHA1_BYTES / 2 - 1)
++    SHA256_BYTES = 256 / 8,
++    /* 64 bytes for hex digits and 15 bytes for ' '. */
++    SHA256_STRING_LENGTH = SHA256_BYTES * 2 + (SHA256_BYTES / 2 - 1)
+ };
+ 
+ /* These status variables are returned by ssl_handshake() to describe the
+@@ -90,7 +90,7 @@
+ 
+ extern int ssl_post_connect_check(SSL *ssl, const char *hostname);
+ 
+-extern char *ssl_cert_fp_str_sha1(const X509 *cert, char *strbuf, size_t len);
++extern char *ssl_cert_fp_str_sha256(const X509 *cert, char *strbuf, size_t len);
+ 
+ extern int ssl_load_default_ca_certs(SSL_CTX *ctx);
+ 
+
